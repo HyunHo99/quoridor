@@ -17,9 +17,9 @@ mongoose.connect('mongodb+srv://haebo1:qveZJc5CfWmhUBWb@quoridor.ftijy.mongodb.n
 }).then(() => console.log('MongoDB Connected...')).catch(err => console.log(err))
 
 
-app.get('/', (req, res) => res.send('hello world'))
+app.get('/api', (req, res) => res.send('hello world'))
 
-app.post('/register', (req, res) =>{
+app.post('/api/register', (req, res) =>{
     const user = new User(req.body)
     user.save((err, userInfo)=> {
         if(err) return res.json({success:false, err})
@@ -28,7 +28,7 @@ app.post('/register', (req, res) =>{
 })
 
 
-app.post('/login', (req, res)=>{
+app.post('/api/login', (req, res)=>{
     User.findOne({email:req.body.email}, (err, user)=>{
         if(!user){
             return res.json({
@@ -45,7 +45,7 @@ app.post('/login', (req, res)=>{
         })
     })
 })
-app.get("/auth", auth, (req, res) =>{
+app.get("/api/auth", auth, (req, res) =>{
     res.status(200).json({
         _id:req.user._id,
         isAdmin: req.user.role === 0 ? false:true,
@@ -57,12 +57,12 @@ app.get("/auth", auth, (req, res) =>{
     })
 })
 
-app.get("/logout", auth, (req, res) =>{
+app.get("/api/logout", auth, (req, res) =>{
     User.findOneAndUpdate({_id:req.user._id},
         {token:""},
         (err, user) =>{
             if(err) return res.json({success:false, err})
-            return res.status(200).send({successs:true})
+            return res.status(200).send({success:true})
         })
 })
 
