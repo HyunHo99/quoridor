@@ -1,48 +1,147 @@
 import React, { useState } from 'react'
-import { Board, Player } from './tools'
+import { Board, Player, existPath } from './tools'
 function GamePage() {
     const [gameboard, setGameboard] = useState(new Board())
-    let player = new Player(16, 8)
-    console.log(gameboard)
-    console.log(player)
+    const [startX, setStartX] = useState("")
+    const [startY, setStartY] = useState("")
+    const [endX, setEndX] = useState("")
+    const [endY, setEndY] = useState("")
+    const [player1, setplayer1] = useState(new Player(0,8,[16,8]))
+    const [player2, setplayer2] = useState(new Player(16, 8,[0,8]))
+    const [turn, setTurn] = useState(0)
 
-    const upHandler = () =>{
-        setGameboard(player.goto('up', gameboard)[0])
-        console.log(gameboard)
-        console.log(player)
+    const upHandler1 = () =>{
+        const k = player1.goto('up', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player1)
+            setTurn((turn+1)%2)
+        }
     }
-    const leftHandler = () =>{
-        setGameboard(player.goto('left', gameboard)[0])
-        console.log(gameboard)
-        console.log(player)
+    const leftHandler1 = () =>{
+        const k = player1.goto('left', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player1)
+            setTurn((turn+1)%2)
+        }
     }
-    const rightHandler = () =>{
-        setGameboard(player.goto('right', gameboard)[0])
-        console.log(gameboard)
-        console.log(player)
+    const rightHandler1 = () =>{
+        const k = player1.goto('right', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player1)
+            setTurn((turn+1)%2)
+        }
     }
-    const downHandler = () =>{
-        setGameboard(player.goto('down', gameboard)[0])
-        console.log(gameboard)
-        console.log(player)
+    const downHandler1 = () =>{
+        const k = player1.goto('down', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player1)
+            setTurn((turn+1)%2)
+        }
+    }
+    
+
+    const upHandler2 = () =>{
+        const k = player2.goto('up', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player2)
+            setTurn((turn+1)%2)
+        }
+    }
+    const leftHandler2 = () =>{
+        const k = player2.goto('left', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player2)
+            setTurn((turn+1)%2)
+        }
+    }
+    const rightHandler2 = () =>{
+        const k = player2.goto('right', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player2)
+            setTurn((turn+1)%2)
+        }
+    }
+    const downHandler2 = () =>{
+        const k = player2.goto('down', gameboard.board)
+        if(k[1]){
+            setGameboard(k[0])
+            console.log(gameboard)
+            console.log(player2)
+            setTurn((turn+1)%2)
+        }
+    }
+
+
+    const onSubmitHandler1 = () => {
+        if(gameboard.makeWall([startX,startY], [endX,endY])){
+            gameboard.updateCannotMakeWall([player1,player2])
+            console.log(gameboard.board)
+            setGameboard(Object.create(gameboard))
+            setTurn((turn+1)%2)
+        }
     }
     
 
     return (
         <div>
-
-        
-        <button onClick={upHandler}>Up</button>
-        <button onClick={leftHandler}>left</button>
-        <button onClick={rightHandler}>right</button>
-        <button onClick={downHandler}>down</button>
-        {gameboard.board.map(x =>{
-                return (
-                    <ol>
-                        {x}
-                    </ol>
-                )
+        <button disabled={turn} onClick={upHandler1}>Up1</button>
+        <button disabled={turn} onClick={leftHandler1}>left1</button>
+        <button disabled={turn} onClick={rightHandler1}>right1</button>
+        <button disabled={turn} onClick={downHandler1}>down1</button>
+            <label>startX</label>
+            <input type="text" value={startX} onChange={(event) =>{setStartX(event.currentTarget.value)}} />
+            <label>startY</label>
+            <input type="text" value={startY} onChange={(event) => {setStartY(event.currentTarget.value)}} />
+            <label>endX</label>
+            <input type="text" value={endX} onChange={(event) => {setEndX(event.currentTarget.value)}} />
+            <label>endY</label>
+            <input type="text" value={endY} onChange={(event) => {setEndY(event.currentTarget.value)}} />
+            <br />
+            <button disabled={turn} onClick={onSubmitHandler1}>makeWall1</button>
+        {gameboard.board.map((val, index) => {
+            return(
+                <li key={index}>
+                    {val.map((x, index2)=>{
+                        if(index2%2===1 && index%2===1){
+                            return (" ")
+                        }
+                        if(index2%2===0 && index%2===1){
+                            if(gameboard.board[index][index2]===1){
+                                return("=")
+                            }
+                            return("_")
+                        }
+                        if(index%2===0 && index2%2===1){
+                            if(gameboard.board[index][index2]===1){
+                                return("||")
+                            }
+                            return("|")
+                        }
+                        else return (x)
+                    })}
+                </li>
+            )
             })}
+        <button disabled={!turn} onClick={upHandler2}>Up2</button>
+        <button disabled={!turn} onClick={leftHandler2}>left2</button>
+        <button disabled={!turn} onClick={rightHandler2}>right2</button>
+        <button disabled={!turn} onClick={downHandler2}>down2</button>
+        <button disabled={!turn} onClick={onSubmitHandler1}>makeWall2</button>
+        <p>{turn}</p>
         </div>
     )
 
