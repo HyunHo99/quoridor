@@ -2,21 +2,37 @@ import React from 'react'
 import Axios from 'axios'
 import { withRouter } from 'react-router'
 import { Layout, Menu, Breadcrumb } from 'antd';
+import Modal from '../../modal/Modal';
+import MakeRoom from './MakeRoom';
+import Rooms from "./Rooms"
+
 import {
   DesktopOutlined,
   PieChartOutlined,
   FileOutlined,
   TeamOutlined,
   UserOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
+
 class LandingPage extends React.Component {
+  
   state = {
-    collapsed: false,
+    collapsed: true,
+    modalOpen: false
   };
+
+  openModal = () => {
+    this.setState({ modalOpen: true })
+  }
+  closeModal = () => {
+      this.setState({ modalOpen: false })
+  }
+
   onClickHandler = () =>{
     Axios.get('/api/logout')
         .then( response =>{
@@ -47,11 +63,14 @@ class LandingPage extends React.Component {
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
           <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+          <Menu theme="dark" mode="inline">
+          <Menu.Item onClick={()=>{this.props.history.push("/")}}  key="1" icon={<HomeOutlined />}>
+              Home
+            </Menu.Item>
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-              <Menu.Item onClick={this.toLogin} key="1">로그인</Menu.Item>
-              <Menu.Item onClick={this.onClickHandler}key="2">로그아웃</Menu.Item>
-              <Menu.Item onClick={this.toRegister}key="3">회원가입</Menu.Item>
+              <Menu.Item onClick={this.toLogin} key="2">로그인</Menu.Item>
+              <Menu.Item onClick={this.onClickHandler}key="3">로그아웃</Menu.Item>
+              <Menu.Item onClick={this.toRegister}key="4">회원가입</Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
@@ -59,11 +78,16 @@ class LandingPage extends React.Component {
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+              <Breadcrumb.Item>개설된 방</Breadcrumb.Item>
             </Breadcrumb>
+            <React.Fragment>
+            <button onClick={ this.openModal }>방만들기</button>
+            <Modal open={ this.state.modalOpen } close={ this.closeModal } header="Create a game room">
+                    <MakeRoom></MakeRoom>
+              </Modal>
+              </React.Fragment>
             <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-              Bill is a cat.
+              <Rooms />
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>

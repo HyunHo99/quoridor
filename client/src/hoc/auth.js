@@ -26,7 +26,7 @@ export default function (SpecificComponent, loginUserOnly, adminRoute = null){
                     if(adminRoute && !response.payload.isAdmin){
                         props.history.push('/')
                     }else{
-                        if(!loginUserOnly){
+                        if(loginUserOnly===false){
                             props.history.push('/')
                         }
                     }

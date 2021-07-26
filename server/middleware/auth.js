@@ -11,4 +11,16 @@ let auth = (req, res, next) => {
     })
 }
 
-module.exports = { auth }
+
+
+let authRoom = (req, res, next) => {
+    let token = req.cookies.x_auth
+    User.findByToken(token, (err, user) => {
+        if(err) throw err;
+        if(!user) return res.json({success:false, error:err})
+        req.roomURL = user._id
+        next()
+    })
+}
+
+module.exports = { auth, authRoom }

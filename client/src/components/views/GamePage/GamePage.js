@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Board, Player, existPath } from './tools'
-function GamePage() {
+function GamePage(props) {
     const [gameboard, setGameboard] = useState(new Board())
     const [startX, setStartX] = useState("")
     const [startY, setStartY] = useState("")

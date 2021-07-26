@@ -9,6 +9,7 @@ import LandingPage from './components/views/LandingPage/LandingPage'
 import LoginPage from './components/views/LoginPage/LoginPage'
 import RegisterPage from "./components/views/RegisterPage/RegisterPage"
 import GamePage from "./components/views/GamePage/GamePage"
+import GameRoom from "./components/views/GamePage/GameRoom"
 import Auth from "./hoc/auth"
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route exact path="/login" component={Auth(LoginPage, false)}/>
         <Route exact path="/register" component={Auth(RegisterPage, false)}/>
         <Route exact path="/game" component={Auth(GamePage, null)}/>
+        <Route exact path="/gameRoom" component={Auth(GameRoom, null)}/>
       </Switch>
     </div>
   </Router>

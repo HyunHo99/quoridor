@@ -10,6 +10,7 @@ import {
   FileOutlined,
   TeamOutlined,
   UserOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -18,7 +19,7 @@ const { SubMenu } = Menu;
 
 function RegisterPage(props) {
 
-const [state, setState] =  useState({ collapsed : false})
+const [state, setState] =  useState({ collapsed : true})
 const dispatch = useDispatch()
 const [Email, setEmail] = useState("")
 const [Password, setPassword] = useState("")
@@ -91,11 +92,14 @@ const onSubmitHandler = (event) => {
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
           <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+          <Menu theme="dark" mode="inline">
+          <Menu.Item key="1" onClick={()=>{props.history.push("/")}} icon={<HomeOutlined />}>
+              Home
+            </Menu.Item>
             <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-              <Menu.Item onClick={toLogin} key="1">로그인</Menu.Item>
-              <Menu.Item onClick={onClickHandler}key="2">로그아웃</Menu.Item>
-              <Menu.Item onClick={toRegister}key="3">회원가입</Menu.Item>
+              <Menu.Item onClick={toLogin} key="2">로그인</Menu.Item>
+              <Menu.Item onClick={onClickHandler}key="3">로그아웃</Menu.Item>
+              <Menu.Item onClick={toRegister}key="4">회원가입</Menu.Item>
             </SubMenu>
           </Menu>
         </Sider>
