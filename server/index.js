@@ -65,13 +65,14 @@ wss.on('connection', function connection(ws){
                 else{
                     let sl = socketMap.get(k.roomID)
                     if(sl!=null){
-                    let startX = 18 - k.startX
-                    let startY = 18 - k.startY
-                    let endX = 18 - k.endX
-                    let endY = 18 - k.endY
+                    let startX = 16 - k.startX
+                    let startY = 16 - k.startY
+                    let endX = 16 - k.endX
+                    let endY = 16 - k.endY
                     sl.forEach((i) => {
                         if(i!=ws){
-                            i.send(`{"message":"${message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
+                            i.send(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
+                            console.log(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
                         }
                     })
                 }
@@ -89,7 +90,6 @@ const sendMessage = function(message, roomID, ws){
         else if(!room) ws.send(`{"message":"fail to update"}`)
         else{
             let sl = socketMap.get(roomID)
-            console.log(sl.length)
             if(sl!=null){
                 sl.forEach((i) => {
                     if(i!=ws){

@@ -25,8 +25,10 @@ export class Board {
         let endX=end[0]
         let endY=end[1]
         if(startX<=17 && startX>=-1 && startY>=-1 && startY<=17 && endX>=-1 && endX<=17 && endY>=-1 && endY<=17){
+            
             if(startX===endX && Math.abs(startY-endY)===4){ ///세로로 쌓은 경우
                 let startYFrom = Math.max(startY, endY)
+                
                 if(this.board[startYFrom-1][startX]===0 && this.board[startYFrom-3][startX]===0){
                     this.board[startYFrom-1][startX]=1
                     this.board[startYFrom-3][startX]=1
@@ -34,6 +36,7 @@ export class Board {
                 }
             }
             if(startY===endY && Math.abs(startX-endX)===4){ ///가로로 쌓은 경우
+                
                 let startXFrom = Math.max(startX, endX)
                 if(this.board[startY][startXFrom-1]===0 && this.board[startY][startXFrom-3]===0){
                     this.board[startY][startXFrom-1]=1

@@ -9,12 +9,12 @@ function GamePage(props) {
     const [gameboard, setGameboard] = useState(new Board())
     const [startX, setStartX] = useState("")
     const [startY, setStartY] = useState("")
+    const [yame, setYame] = useState(0)
     const [endX, setEndX] = useState("")
     const [endY, setEndY] = useState("")
     const [player1, setplayer1] = useState(new Player(0,8,[16,8]))
     const [player2, setplayer2] = useState(new Player(16, 8,[0,8]))
-    const initTurn = Number(Object.values(qs.parse(props.location.search))[1])
-    const [turn, setTurn] = useState(initTurn)
+    const [turn, setTurn] = useState(0)
     const roomID = Object.values(qs.parse(props.location.search))[0]
 
     const upHandler1 = () =>{
@@ -38,10 +38,11 @@ function GamePage(props) {
     const rightHandler1 = () =>{
         const k = player1.goto('right', gameboard.board)
         if(k[1]){
+            setTurn((turn+1)%2)
             setGameboard(k[0])
             console.log(gameboard)
             console.log(player1)
-            setTurn((turn+1)%2)
+            
         }
     }
     const downHandler1 = () =>{
@@ -50,6 +51,7 @@ function GamePage(props) {
             setGameboard(k[0])
             console.log(gameboard)
             console.log(player1)
+            console.log(turn)
             setTurn((turn+1)%2)
         }
     }
@@ -101,14 +103,10 @@ function GamePage(props) {
     }
 
     const onSubmitHandler1 = () => {
-        if(gameboard.makeWall([startX,startY], [endX,endY])){
-            gameboard.updateCannotMakeWall([player1,player2])
-            console.log(gameboard.board)
-            setGameboard(Object.create(gameboard))
-            setTurn((turn+1)%2)
-        }
+
     }
     const onSubmitHandler2 = () => {
+        
         if(gameboard.makeWall([startX,startY], [endX,endY])){
             gameboard.updateCannotMakeWall([player1,player2])
             console.log(gameboard.board)
@@ -118,30 +116,41 @@ function GamePage(props) {
         }
     }
     useEffect(() => {
-        console.log("zz")
-        socket.addEventListener('message', (data) => {
-            let k = JSON.parse(data.data)
-            console.log(k)
-            if(k.message==="Move_Up"){
-                upHandler1()
-            }
-            if(k.message==="Move_Left"){
-                leftHandler1()
-            }
-            if(k.message==="Move_Right"){
-                rightHandler1()
-            }
-            if(k.message==="Move_Down"){
-                downHandler1()
-            }
-            if(k.message==="Make_Wall"){
-                setStartX(k.startX)
-                setStartY(k.startY)
-                setEndX(k.endX)
-                setEndY(k.endY)
-                onSubmitHandler1()
-            }
-        })
+        if(yame===0){
+            setYame(1)
+            setTurn(Number(Object.values(qs.parse(props.location.search))[1]))
+            console.log("zz")
+            socket.addEventListener('message', (data) => {
+                let k = JSON.parse(data.data)
+                console.log(k)
+                if(k.message==="Move_Up"){
+                    upHandler1()
+                }
+                if(k.message==="Move_Left"){
+                    leftHandler1()
+                }
+                if(k.message==="Move_Right"){
+                    rightHandler1()
+                }
+                if(k.message==="Move_Down"){
+                    downHandler1()
+                }
+                if(k.message==="Make_Wall"){
+                    let a = String(k.startX)
+                    let b = String(k.startY)
+                    let c = String(k.endX)
+                    let d = String(k.endY)
+                    console.log(a,b,c,d)
+                    onSubmitHandler1()
+                    if(gameboard.makeWall([a,b], [c,d])){
+                        gameboard.updateCannotMakeWall([player1,player2])
+                        console.log(gameboard.board)
+                        setGameboard(Object.create(gameboard))
+                        setTurn((turn+1)%2)
+                    }
+                }
+            })
+    }
     })
 
 
