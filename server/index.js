@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const WebSocket = require('ws')
 const server = require('http').createServer(app)
+var socketMap = new Map()
 
 const wss = new WebSocket.Server({ server:server })
 
@@ -18,11 +19,89 @@ wss.on('connection', function connection(ws){
     console.log('A new Client Connected!')
     ws.send()
     ws.on("message", function incoming(message){
-        console.log(`onRoomID${message.id}, send ${message.action}`)
-        ws.send("Got message: %s", message)
+        let k = JSON.parse(message)
+        console.log(`onRoomID : ${k.roomID}, send : ${k.message}`)
+        if(k.message === "Game_Start"){                     //game start
+            Room.findOne({url:k.roomID}, (err, room) =>{
+                if(err) ws.send(err)
+                else if(!room) ws.send(`{"message":"fail to start"}`)
+                else{
+                    let sl = socketMap.get(k.roomID)
+                    if(sl==null){
+                        sl = []
+                    }
+                    if(sl.length>=2) ws.send(`{"message":"fail to start"}`)
+                    else{
+                        sl.push(ws)
+                        socketMap.set(k.roomID, sl)
+                        if(sl.length==2){
+                            sl.forEach((i,index) => {
+                                i.send(`{"turn":"${index}", "message":"Game_Start"}`)})
+                        }
+                        else{
+                            ws.send(`{"message":"Ready_Success"}`)
+                        }
+                        
+                    }
+                }
+            })
+        }
+        if(k.message === "Move_Left"){ 
+            sendMessage("Move_Right", k.roomID, ws)
+        }
+        if(k.message === "Move_Right"){ 
+            sendMessage("Move_Left", k.roomID, ws)
+        }
+        if(k.message === "Move_Up"){ 
+            sendMessage("Move_Down", k.roomID, ws)
+        }
+        if(k.message === "Move_Down"){ 
+            sendMessage("Move_Up", k.roomID, ws)
+        }
+        if(k.message === "Make_Wall"){ 
+            Room.findOne({url:k.roomID}, (err, room) =>{
+                if(err) ws.send(err)
+                else if(!room) ws.send(`{"message":"fail to update"}`)
+                else{
+                    let sl = socketMap.get(k.roomID)
+                    if(sl!=null){
+                    let startX = 18 - k.startX
+                    let startY = 18 - k.startY
+                    let endX = 18 - k.endX
+                    let endY = 18 - k.endY
+                    sl.forEach((i) => {
+                        if(i!=ws){
+                            i.send(`{"message":"${message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
+                        }
+                    })
+                }
+                    }
+
+
+            })
+        }
     })
 })
 
+const sendMessage = function(message, roomID, ws){
+    Room.findOne({url:roomID}, (err, room) =>{
+        if(err) ws.send(err)
+        else if(!room) ws.send(`{"message":"fail to update"}`)
+        else{
+            let sl = socketMap.get(roomID)
+            console.log(sl.length)
+            if(sl!=null){
+                sl.forEach((i) => {
+                    if(i!=ws){
+                        i.send(`{"message":"${message}"}`)
+                        console.log(`server send : ${message}`)
+                    }
+                })
+        }
+        }
+    })
+
+}
 
 
 app.use(bodyParser.urlencoded({ extended:true}))
@@ -116,6 +195,9 @@ app.post('/api/joinRoom', (req, res) =>{
                 if(err) throw err;
                 if(!user) return res.json({success:false, error:err})
                 let cl = room.clientList
+                if(cl.length>=2){
+                    return({success:false, error:"room is full"})
+                }
                 cl.push(user.name)
                 Room.updateOne({"url":req.body.url}, {"clientList": cl}, (e)=>{
                     if(e) throw e
@@ -144,6 +226,7 @@ app.post('/api/outRoom',  (req, res) =>{
             if(k.length<=0){
                 Room.deleteOne({"url":req.body.url}, (e)=>{
                     if(e) throw e;
+                    socketMap.set(req.body.url, [])
                     res.status(200).json({outSuccess:true})
                 })
             }
@@ -159,4 +242,4 @@ app.post('/api/outRoom',  (req, res) =>{
 
 
 
-server.listen(port, () => console.log(`example app listening on port ${port} !`))
+server.listen(port,'0.0.0.0', () => console.log(`example app listening on port ${port} !`))

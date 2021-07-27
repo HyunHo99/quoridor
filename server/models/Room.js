@@ -19,7 +19,7 @@ const roomSchema = mongoose.Schema({
     clientList:{
         type: Array,
         maxlength: 2
-    },
+    }
 })
 
 roomSchema.pre('save', function( next ){
