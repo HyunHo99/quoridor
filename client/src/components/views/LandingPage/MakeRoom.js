@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {makeRoom} from '../../../_actions/room_action'
+import {makeRoom, joinRoom} from '../../../_actions/room_action'
 import {useDispatch} from 'react-redux'
 import { withRouter } from 'react-router'
 
@@ -16,13 +16,22 @@ function MakeRoom(props) {
         event.preventDefault()
         let body = {
             roomName: roomName,
-            password: Password,
-            socket: props.socket
+            password: Password
         }
         dispatch(makeRoom(body))
             .then(response =>{
                 if(response.payload.success){
-                    props.history.push(`/gameRoom?id=${response.payload.room.url}`)
+                    let joinbody = {
+                        url: response.payload.room.url,
+                        password: Password
+                    }
+                    dispatch(joinRoom(joinbody)).then(response2 =>{
+                        if(response2.payload.joinSuccess){
+                            props.history.push(`/gameRoom?id=${response.payload.room.url}`)
+                        }else{
+                            console.log('error')
+                        }
+                    })
                 } else{
                     alert('error')
                 }

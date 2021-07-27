@@ -19,6 +19,7 @@ let authRoom = (req, res, next) => {
         if(err) throw err;
         if(!user) return res.json({success:false, error:err})
         req.roomURL = user._id
+        req.userName = user.name
         next()
     })
 }

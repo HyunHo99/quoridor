@@ -83,11 +83,11 @@ class LandingPage extends React.Component {
             <React.Fragment>
             <button onClick={ this.openModal }>방만들기</button>
             <Modal open={ this.state.modalOpen } close={ this.closeModal } header="Create a game room">
-                    <MakeRoom></MakeRoom>
+                    <MakeRoom socket={this.props.socket}/>
               </Modal>
               </React.Fragment>
             <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-              <Rooms />
+              <Rooms socket={this.props.socket}/>
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>

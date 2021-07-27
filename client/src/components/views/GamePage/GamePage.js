@@ -1,6 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Board, Player, existPath } from './tools'
+import { withRouter } from 'react-router'
+import Axios from 'axios'
+
 function GamePage(props) {
+    var qs = require('qs')
     const [gameboard, setGameboard] = useState(new Board())
     const [startX, setStartX] = useState("")
     const [startY, setStartY] = useState("")
@@ -9,6 +13,8 @@ function GamePage(props) {
     const [player1, setplayer1] = useState(new Player(0,8,[16,8]))
     const [player2, setplayer2] = useState(new Player(16, 8,[0,8]))
     const [turn, setTurn] = useState(0)
+    const roomID = Object.values(qs.parse(props.location.search))[0]
+    
 
     const upHandler1 = () =>{
         const k = player1.goto('up', gameboard.board)
@@ -86,6 +92,20 @@ function GamePage(props) {
     }
 
 
+    useEffect(() => {
+        let body = {
+            roomID : roomID
+        }
+        Axios.post('/getTurn', body).then((response) =>{
+            if(response.data.success){
+                setTurn(response.data.turn)
+            }
+            else{
+                console.log('game start fail')
+            }
+        })
+    })
+
     const onSubmitHandler1 = () => {
         if(gameboard.makeWall([startX,startY], [endX,endY])){
             gameboard.updateCannotMakeWall([player1,player2])
@@ -148,4 +168,4 @@ function GamePage(props) {
 
 }
 
-export default GamePage
+export default withRouter(GamePage)

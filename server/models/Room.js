@@ -9,8 +9,7 @@ const roomSchema = mongoose.Schema({
         maxlength:50
     },
     password:{
-        type:String,
-        minlength:5
+        type:String
     },
     url:{
         type: String,
@@ -20,7 +19,7 @@ const roomSchema = mongoose.Schema({
     clientList:{
         type: Array,
         maxlength: 2
-    }
+    },
 })
 
 roomSchema.pre('save', function( next ){

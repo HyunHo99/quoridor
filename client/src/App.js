@@ -11,8 +11,9 @@ import RegisterPage from "./components/views/RegisterPage/RegisterPage"
 import GamePage from "./components/views/GamePage/GamePage"
 import GameRoom from "./components/views/GamePage/GameRoom"
 import Auth from "./hoc/auth"
+import React from "react";
 
-function App() {
+function App(props) {
   return (
     <Router>
     <div>
@@ -27,11 +28,11 @@ function App() {
         of them to render at a time
       */}
       <Switch>
-        <Route exact path="/" component={Auth(LandingPage, null)}/>
-        <Route exact path="/login" component={Auth(LoginPage, false)}/>
-        <Route exact path="/register" component={Auth(RegisterPage, false)}/>
-        <Route exact path="/game" component={Auth(GamePage, null)}/>
-        <Route exact path="/gameRoom" component={Auth(GameRoom, null)}/>
+        <Route exact path="/" component={Auth(LandingPage, null, props)}/>
+        <Route exact path="/login" component={Auth(LoginPage, false, props)}/>
+        <Route exact path="/register" component={Auth(RegisterPage, false, props)}/>
+        <Route exact path="/game" component={Auth(GamePage, null, props)}/>
+        <Route exact path="/gameRoom" component={Auth(GameRoom, null, props)}/>
       </Switch>
     </div>
   </Router>

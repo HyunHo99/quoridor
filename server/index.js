@@ -16,9 +16,9 @@ const wss = new WebSocket.Server({ server:server })
 
 wss.on('connection', function connection(ws){
     console.log('A new Client Connected!')
-    ws.send('Welcome new client')
+    ws.send()
     ws.on("message", function incoming(message){
-        console.log("received: %s", message)
+        console.log(`onRoomID${message.id}, send ${message.action}`)
         ws.send("Got message: %s", message)
     })
 })
@@ -61,6 +61,8 @@ app.post('/api/login', (req, res)=>{
         })
     })
 })
+
+
 app.get("/api/auth", auth, (req, res) =>{
     res.status(200).json({
         _id:req.user._id,
@@ -83,10 +85,10 @@ app.get("/api/logout", auth, (req, res) =>{
 })
 
 app.post('/api/makeRoom', authRoom, (req, res) =>{
-    const room = new Room({"roomName":req.body.roomName, "password": req.body.password, "url":req.roomURL, "clientList":[req.body.socket]})
+    const room = new Room({"roomName":req.body.roomName, "password": req.body.password, "url":req.roomURL,"clientList": []})
     room.save((err, roomInfo)=> {
         if(err) return res.json({success:false, err})
-        return res.status(200).json({success: true,room:room})
+        return res.status(200).json({success: true, room:room})
     })
 })
 
@@ -96,6 +98,63 @@ app.get("/api/getRooms", (req, res) =>{
    }).catch(err =>{
        res.status(500).json({success:false, err})
    })
+})
+
+app.post('/api/joinRoom', (req, res) =>{
+    Room.findOne({"url" : req.body.url}, function (err, room){
+        if(!room){
+            return res.json({
+            joinSuccess : false,
+            body : req.body.url,
+            message:"해당하는 방은 존재하지 않습니다."
+            })
+        }
+        room.comparePassword(req.body.password, (err, isMatch)=>{
+            if(!isMatch) return res.json({joinSuccess:false, message:"비밀번호가 틀렸습니다."})
+            let token = req.cookies.x_auth
+            User.findByToken(token, (err, user)=>{
+                if(err) throw err;
+                if(!user) return res.json({success:false, error:err})
+                let cl = room.clientList
+                cl.push(user.name)
+                Room.updateOne({"url":req.body.url}, {"clientList": cl}, (e)=>{
+                    if(e) throw e
+                    res.status(200).json({joinSuccess:true, turn:cl.length})
+                })
+            })
+        })
+    })
+})
+
+app.post('/api/outRoom',  (req, res) =>{
+    Room.findOne({"url" : req.body.url}, function (err, room){
+        if(!room){
+            return res.json({
+            outSuccess : false,
+            body : req.body.url,
+            message:"해당하는 방은 존재하지 않습니다."
+            })
+        }
+        let token = req.cookies.x_auth
+        User.findByToken(token, (err, user)=>{
+            if(err) throw err;
+            if(!user) return res.json({success:false, error:err})
+            let k = room.clientList
+            k.remove(user.name)
+            if(k.length<=0){
+                Room.deleteOne({"url":req.body.url}, (e)=>{
+                    if(e) throw e;
+                    res.status(200).json({outSuccess:true})
+                })
+            }
+            else{
+                Room.updateOne({"url":req.body.url}, {"clientList": k}, (e)=>{
+                    if(e) throw e
+                    res.status(200).json({outSuccess:true})
+                })
+        }
+    })
+})
 })
 
 
