@@ -13,13 +13,13 @@ import Reducer from './_reducers'
 
 
 const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore)
-const soc = new WebSocket('ws://143.248.194.208:5000')
+
 
 ReactDOM.render(
   <Provider
     store={createStoreWithMiddleware(Reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}  
   >
-    <App socket={soc} />
+    <App />
   </Provider>,
   document.getElementById('root')
 );

@@ -2,10 +2,13 @@ import React, { useState,useEffect } from 'react'
 import { Board, Player, existPath } from './tools'
 import { withRouter } from 'react-router'
 import Axios from 'axios'
+const socket = new WebSocket('ws://143.248.194.208:5000')
+
+
 
 function GamePage(props) {
     var qs = require('qs')
-    const socket = props.socket
+    
     const [gameboard, setGameboard] = useState(new Board())
     const [startX, setStartX] = useState("")
     const [startY, setStartY] = useState("")
@@ -16,6 +19,45 @@ function GamePage(props) {
     const [player2, setplayer2] = useState(new Player(16, 8,[0,8]))
     const [turn, setTurn] = useState(0)
     const roomID = Object.values(qs.parse(props.location.search))[0]
+    
+    useEffect(() => {
+        if(yame===0){
+            setYame(1)
+            setTurn(Number(Object.values(qs.parse(props.location.search))[1]))
+            socket.addEventListener('message', (data) => {
+                let k = JSON.parse(data.data)
+                console.log(k)
+                if(k.roomID===roomID){
+                    if(k.message==="Move_Up"){
+                        upHandler1()
+                    }
+                    if(k.message==="Move_Left"){
+                        leftHandler1()
+                    }
+                    if(k.message==="Move_Right"){
+                        rightHandler1()
+                    }
+                    if(k.message==="Move_Down"){
+                        downHandler1()
+                    }
+                    if(k.message==="Make_Wall"){
+                        let a = String(k.startX)
+                        let b = String(k.startY)
+                        let c = String(k.endX)
+                        let d = String(k.endY)
+                        console.log(a,b,c,d)
+                        onSubmitHandler1()
+                        if(gameboard.makeWall([a,b], [c,d])){
+                            gameboard.updateCannotMakeWall([player1,player2])
+                            console.log(gameboard.board)
+                            setGameboard(Object.create(gameboard))
+                            setTurn((turn+1)%2)
+                        }
+                    }
+            }
+            })
+        }
+    })
 
     const upHandler1 = () =>{
         const k = player1.goto('up', gameboard.board)
@@ -115,43 +157,6 @@ function GamePage(props) {
             socket.send(`{"roomID":"${roomID}", "message":"Make_Wall", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
         }
     }
-    useEffect(() => {
-        if(yame===0){
-            setYame(1)
-            setTurn(Number(Object.values(qs.parse(props.location.search))[1]))
-            console.log("zz")
-            socket.addEventListener('message', (data) => {
-                let k = JSON.parse(data.data)
-                console.log(k)
-                if(k.message==="Move_Up"){
-                    upHandler1()
-                }
-                if(k.message==="Move_Left"){
-                    leftHandler1()
-                }
-                if(k.message==="Move_Right"){
-                    rightHandler1()
-                }
-                if(k.message==="Move_Down"){
-                    downHandler1()
-                }
-                if(k.message==="Make_Wall"){
-                    let a = String(k.startX)
-                    let b = String(k.startY)
-                    let c = String(k.endX)
-                    let d = String(k.endY)
-                    console.log(a,b,c,d)
-                    onSubmitHandler1()
-                    if(gameboard.makeWall([a,b], [c,d])){
-                        gameboard.updateCannotMakeWall([player1,player2])
-                        console.log(gameboard.board)
-                        setGameboard(Object.create(gameboard))
-                        setTurn((turn+1)%2)
-                    }
-                }
-            })
-    }
-    })
 
 
     

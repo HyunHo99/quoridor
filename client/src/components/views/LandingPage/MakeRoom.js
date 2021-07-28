@@ -2,11 +2,13 @@ import React, {useState} from 'react'
 import {makeRoom, joinRoom} from '../../../_actions/room_action'
 import {useDispatch} from 'react-redux'
 import { withRouter } from 'react-router'
+const socket = new WebSocket('ws://143.248.194.208:5000')
 
 function MakeRoom(props) {
     
     const dispatch = useDispatch()
     const [roomName, setRoomName] = useState("")
+    
     const [Password, setPassword] = useState("")
     
 
@@ -27,29 +29,33 @@ function MakeRoom(props) {
                     }
                     dispatch(joinRoom(joinbody)).then(response2 =>{
                         if(response2.payload.joinSuccess){
-                            props.history.push(`/gameRoom?id=${response.payload.room.url}`)
+                            socket.send(`{"roomID": "${response.payload.room.url}", "message":"Request_Setup"}`)
+                            props.history.push({
+                                pathname : `/gameRoom`,
+                                search : `?id=${response.payload.room.url}`,
+                                state : {detail : response.payload.room}
+                            })
                         }else{
                             console.log('error')
                         }
                     })
                 } else{
-                    alert('error')
+                    alert('로그인 후 이용하세요.')
                 }
             })
     }
     
     return (
         <div>            
-            <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={onSubmitHandler}>
-                <label>방이름</label>
+                <label>방이름 : </label>
                 <input type="text" value={roomName} onChange={(event) => {setRoomName(event.currentTarget.value)}} />
-                <label>방비밀번호</label>
+                <p/>
+                <label>비밀번호 : </label>
                 <input type="password" value={Password} onChange={(event) => {setPassword(event.currentTarget.value)}} />
-                <br />
-                <button type="submit">
+                <p />
+                <button disabled={roomName.length<3} onClick={onSubmitHandler}>
                     방만들기
                 </button>
-                </form>
         </div>
     )
 }

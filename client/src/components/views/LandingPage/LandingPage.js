@@ -5,6 +5,7 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 import Modal from '../../modal/Modal';
 import MakeRoom from './MakeRoom';
 import Rooms from "./Rooms"
+import "./LandingPage.css"
 
 import {
   DesktopOutlined,
@@ -60,7 +61,7 @@ class LandingPage extends React.Component {
   render() {
     const { collapsed } = this.state;
     return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh'}}>
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
           <div className="logo" />
           <Menu theme="dark" mode="inline">
@@ -73,7 +74,7 @@ class LandingPage extends React.Component {
               <Menu.Item onClick={this.toRegister}key="4">회원가입</Menu.Item>
             </SubMenu>
           </Menu>
-        </Sider>
+        </Sider>   
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>

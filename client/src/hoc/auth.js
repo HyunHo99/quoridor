@@ -5,7 +5,7 @@ import {auth} from '../_actions/user_action'
 import { withRouter } from 'react-router'
 
 
-export default function (SpecificComponent, loginUserOnly,prop, adminRoute = null){
+export default function (SpecificComponent, loginUserOnly, adminRoute = null){
 
     //null => 아무나 출입가능
     //true => 로그인한 유저만 출입가능
@@ -34,7 +34,7 @@ export default function (SpecificComponent, loginUserOnly,prop, adminRoute = nul
             })
         }, [])
         return (
-            <SpecificComponent socket={prop.socket}/>
+            <SpecificComponent/>
         )
     }
     return withRouter(AuthenticationCheck)

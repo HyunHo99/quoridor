@@ -17,87 +17,105 @@ const wss = new WebSocket.Server({ server:server })
 
 wss.on('connection', function connection(ws){
     console.log('A new Client Connected!')
-    ws.send()
     ws.on("message", function incoming(message){
         let k = JSON.parse(message)
         console.log(`onRoomID : ${k.roomID}, send : ${k.message}`)
         if(k.message === "Game_Start"){                     //game start
             Room.findOne({url:k.roomID}, (err, room) =>{
                 if(err) ws.send(err)
-                else if(!room) ws.send(`{"message":"fail to start"}`)
+                else if(!room) ws.send(`{"message":"fail to start", "roomID":"${k.roomID}"}`)
                 else{
-                    let sl = socketMap.get(k.roomID)
-                    if(sl==null){
-                        sl = []
+                    let initSl = socketMap.get(k.roomID)
+                    if(initSl==null){
+                        initSl = []
                     }
-                    if(sl.length>=2) ws.send(`{"message":"fail to start"}`)
+                    let sl = initSl.filter(i => i.readyState === WebSocket.OPEN)
+
+                    if(sl.length>=2) ws.send(`{"message":"fail to start", "roomID":"${k.roomID}"}`)
                     else{
                         sl.push(ws)
                         socketMap.set(k.roomID, sl)
                         if(sl.length==2){
                             sl.forEach((i,index) => {
-                                i.send(`{"turn":"${index}", "message":"Game_Start"}`)})
+                                console.log("server send gameStart")
+                                i.send(`{"turn":"${index}", "message":"Game_Start", "roomID":"${k.roomID}"}`)})
                         }
                         else{
-                            ws.send(`{"message":"Ready_Success"}`)
+                            console.log("server send ready_success")
+                            ws.send(`{"message":"Ready_Success", "roomID":"${k.roomID}"}`)
                         }
                         
                     }
                 }
             })
         }
+        if(k.message ==="Request_Setup"){
+            Room.findOne({url:k.roomID}, (err, room) =>{
+                if(err) ws.send(err)
+                else if(!room) ws.send(`{"message":"fail to start"}`)
+                else{
+                    wss.clients.forEach((i) =>{
+                        if (i.readyState === WebSocket.OPEN) {
+                        i.send(`{"message":"User_Come", "userList" : "${room.clientList}", "roomID":"${k.roomID}"}`)
+                        }
+                        else{
+                            i.destroy()
+                        }
+                    })
+                }
+            })
+        }
         if(k.message === "Move_Left"){ 
-            sendMessage("Move_Right", k.roomID, ws)
+            sendMessage("Move_Right", k.roomID, ws, wss)
         }
         if(k.message === "Move_Right"){ 
-            sendMessage("Move_Left", k.roomID, ws)
+            sendMessage("Move_Left", k.roomID, ws, wss)
         }
         if(k.message === "Move_Up"){ 
-            sendMessage("Move_Down", k.roomID, ws)
+            sendMessage("Move_Down", k.roomID, ws, wss)
         }
         if(k.message === "Move_Down"){ 
-            sendMessage("Move_Up", k.roomID, ws)
+            sendMessage("Move_Up", k.roomID, ws, wss)
         }
         if(k.message === "Make_Wall"){ 
             Room.findOne({url:k.roomID}, (err, room) =>{
                 if(err) ws.send(err)
-                else if(!room) ws.send(`{"message":"fail to update"}`)
+                else if(!room) ws.send(`{"message":"fail to update", "roomID":"${k.roomID}"}`)
                 else{
-                    let sl = socketMap.get(k.roomID)
-                    if(sl!=null){
                     let startX = 16 - k.startX
                     let startY = 16 - k.startY
                     let endX = 16 - k.endX
                     let endY = 16 - k.endY
-                    sl.forEach((i) => {
-                        if(i!=ws){
-                            i.send(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
-                            console.log(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
-                        }
+                    wss.clients.forEach((i) => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            if(i!=ws){
+                                i.send(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}", "roomID":"${k.roomID}"}`)
+                                console.log(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}", "roomID":"${k.roomID}"}`)
+                            }
+                    }
                     })
                 }
-                    }
-
-
             })
         }
     })
 })
 
-const sendMessage = function(message, roomID, ws){
+const sendMessage = function(message, roomID, ws, wss){
     Room.findOne({url:roomID}, (err, room) =>{
         if(err) ws.send(err)
         else if(!room) ws.send(`{"message":"fail to update"}`)
         else{
-            let sl = socketMap.get(roomID)
-            if(sl!=null){
-                sl.forEach((i) => {
-                    if(i!=ws){
-                        i.send(`{"message":"${message}"}`)
+            wss.clients.forEach((i) => {
+                if (i.readyState === WebSocket.OPEN) {
+                    if(i!==ws){
+                        i.send(`{"message":"${message}", "roomID":"${roomID}"}`)
                         console.log(`server send : ${message}`)
                     }
-                })
-        }
+            }else{
+                i.destroy()
+            }
+            })
+        
         }
     })
 
@@ -209,6 +227,7 @@ app.post('/api/joinRoom', (req, res) =>{
 })
 
 app.post('/api/outRoom',  (req, res) =>{
+    console.log("outRoomCalled")
     Room.findOne({"url" : req.body.url}, function (err, room){
         if(!room){
             return res.json({

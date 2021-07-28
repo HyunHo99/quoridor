@@ -1,0 +1,26 @@
+/* .ant-card {
+    border-radius:10px !important;
+}
+.ant-card-head{
+    border-bottom: 1px solid #001529!important; 
+    border-radius: 5px 5px 0 0!important; 
+} */
+.ant-card-body{
+    text-align:center;
+    width:100%;
+    height:100%;
+}
+
+.innerRoom{
+    width:100%;
+    height:100%;
+}
+.site-card-wrapper {
+  padding: 3vw;
+  background: #001529;
+  font:"Helvetica Neue",Helvetica;
+}
+
+[data-theme="dark"] .site-card-wrapper {
+  background: #001529
+}

@@ -28,11 +28,11 @@ function App(props) {
         of them to render at a time
       */}
       <Switch>
-        <Route exact path="/" component={Auth(LandingPage, null, props)}/>
-        <Route exact path="/login" component={Auth(LoginPage, false, props)}/>
-        <Route exact path="/register" component={Auth(RegisterPage, false, props)}/>
-        <Route exact path="/game" component={Auth(GamePage, null, props)}/>
-        <Route exact path="/gameRoom" component={Auth(GameRoom, null, props)}/>
+        <Route exact path="/" component={Auth(LandingPage, null)}/>
+        <Route exact path="/login" component={Auth(LoginPage, false)}/>
+        <Route exact path="/register" component={Auth(RegisterPage, false)}/>
+        <Route exact path="/game" component={Auth(GamePage, null)}/>
+        <Route exact path="/gameRoom" component={Auth(GameRoom, null)}/>
       </Switch>
     </div>
   </Router>
