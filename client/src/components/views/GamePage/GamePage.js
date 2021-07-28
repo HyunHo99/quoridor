@@ -19,11 +19,12 @@ function GamePage(props) {
     const [player2, setplayer2] = useState(new Player(16, 8,[0,8]))
     const [turn, setTurn] = useState(0)
     const roomID = Object.values(qs.parse(props.location.search))[0]
-    
+    const Im_Player = Number(Object.values(qs.parse(props.location.search))[1])
+
     useEffect(() => {
         if(yame===0){
             setYame(1)
-            setTurn(Number(Object.values(qs.parse(props.location.search))[1]))
+            setTurn(Im_Player)
             socket.addEventListener('message', (data) => {
                 let k = JSON.parse(data.data)
                 console.log(k)
@@ -54,10 +55,29 @@ function GamePage(props) {
                             setTurn((turn+1)%2)
                         }
                     }
+                        
+                    
             }
             })
         }
     })
+
+    const Game_End = (who) => {
+        if(who===2){
+            props.history.push(`/resultPage_win`)
+        }else{
+            props.history.push(`/resultPage_loose`)
+        }
+    }
+
+    const checkWin = function(player, who){
+        if(player.y===player.destination[0]&& player.x ===player.destination[1]){
+            console.log(who)
+            Game_End(who)
+            return true
+        }
+        else return false
+    }
 
     const upHandler1 = () =>{
         const k = player1.goto('up', gameboard.board)
@@ -66,6 +86,7 @@ function GamePage(props) {
             console.log(gameboard)
             console.log(player1)
             setTurn((turn+1)%2)
+            checkWin(player1, 1)
         }
     }
     const leftHandler1 = () =>{
@@ -75,6 +96,7 @@ function GamePage(props) {
             console.log(gameboard)
             console.log(player1)
             setTurn((turn+1)%2)
+            checkWin(player1, 1)
         }
     }
     const rightHandler1 = () =>{
@@ -84,7 +106,7 @@ function GamePage(props) {
             setGameboard(k[0])
             console.log(gameboard)
             console.log(player1)
-            
+            checkWin(player1, 1)
         }
     }
     const downHandler1 = () =>{
@@ -95,6 +117,7 @@ function GamePage(props) {
             console.log(player1)
             console.log(turn)
             setTurn((turn+1)%2)
+            checkWin(player1, 1)
         }
     }
     
@@ -107,9 +130,10 @@ function GamePage(props) {
             console.log(player2)
             setTurn((turn+1)%2)
             socket.send(`{"roomID":"${roomID}", "message":"Move_Up"}`)
+            checkWin(player2, 2)
+            }
             
         }
-    }
     const leftHandler2 = () =>{
         const k = player2.goto('left', gameboard.board)
         if(k[1]){
@@ -118,7 +142,7 @@ function GamePage(props) {
             console.log(player2)
             setTurn((turn+1)%2)
             socket.send(`{"roomID":"${roomID}", "message":"Move_Left"}`)
-            
+            checkWin(player2, 2)
         }
     }
     const rightHandler2 = () =>{
@@ -129,7 +153,7 @@ function GamePage(props) {
             console.log(player2)
             setTurn((turn+1)%2)
             socket.send(`{"roomID":"${roomID}", "message":"Move_Right"}`)
-            
+            checkWin(player2, 2)
         }
     }
     const downHandler2 = () =>{
@@ -140,7 +164,7 @@ function GamePage(props) {
             console.log(player2)
             setTurn((turn+1)%2)
             socket.send(`{"roomID":"${roomID}", "message":"Move_Down"}`)
-            
+            checkWin(player2, 2)
         }
     }
 

@@ -4,6 +4,8 @@ import {useDispatch} from 'react-redux'
 import { loginUser } from '../../../_actions/user_action'
 import { withRouter } from 'react-router'
 import { Layout, Menu, Breadcrumb } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
+
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -32,8 +34,7 @@ const onPasswordHandler = (event) => {
     setPassword(event.currentTarget.value)
 }
 
-const onSubmitHandler = (event) => {
-    event.preventDefault()
+const onSubmitHandler = () => {
     let body = {
         email: Email,
         password: Password
@@ -47,6 +48,9 @@ const onSubmitHandler = (event) => {
             }
         })
 }
+const onFinishFailed = (errorInfo) => {
+  console.log('Failed:', errorInfo);
+};
 
   const onClickHandler = () =>{
     Axios.get('/api/logout')
@@ -96,16 +100,37 @@ const onSubmitHandler = (event) => {
             <div style={{
             display: 'flex', justifyContent: 'center', alignItems: 'center', width:'100%', height:'100vh'
         }}>
-            <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={onSubmitHandler}>
-                <label>Email</label>
-                <input type="email" value={Email} onChange={onEmailHandler} />
-                <label>Password</label>
-                <input type="password" value={Password} onChange={onPasswordHandler} />
-                <br />
-                <button type="submit">
-                    Login
-                </button>
-            </form>
+            <Form
+                name="basic"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                initialValues={{ remember: true }}
+                onFinish={onSubmitHandler}
+                onFinishFailed={onFinishFailed}
+              >
+
+                <Form.Item
+                  label="ID"
+                  name="Email"
+                  rules={[{ required: true, message: 'Please input your ID!' }]}
+                >
+                  <Input value={Email} onChange={onEmailHandler} />
+                </Form.Item>
+
+                <Form.Item
+                  label="password"
+                  name="password"
+                  rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                  <Input.Password value={Password} onChange={onPasswordHandler} />
+                </Form.Item>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                  
+                </Form.Item>
+              </Form>
         </div>
             </div>
           </Content>

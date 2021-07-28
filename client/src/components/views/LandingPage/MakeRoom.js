@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {makeRoom, joinRoom} from '../../../_actions/room_action'
 import {useDispatch} from 'react-redux'
+import { Button } from 'antd';
 import { withRouter } from 'react-router'
 const socket = new WebSocket('ws://143.248.194.208:5000')
 
@@ -53,9 +54,9 @@ function MakeRoom(props) {
                 <label>비밀번호 : </label>
                 <input type="password" value={Password} onChange={(event) => {setPassword(event.currentTarget.value)}} />
                 <p />
-                <button disabled={roomName.length<3} onClick={onSubmitHandler}>
-                    방만들기
-                </button>
+                <Button size="large" disabled={roomName.length<3} onClick={onSubmitHandler}>
+                    방 만들기
+                </Button>
         </div>
     )
 }

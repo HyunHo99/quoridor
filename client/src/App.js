@@ -10,6 +10,8 @@ import LoginPage from './components/views/LoginPage/LoginPage'
 import RegisterPage from "./components/views/RegisterPage/RegisterPage"
 import GamePage from "./components/views/GamePage/GamePage"
 import GameRoom from "./components/views/GamePage/GameRoom"
+import WinPage from "./components/views/ResultPage/WinPage"
+import LoosePage from "./components/views/ResultPage/LoosePage"
 import Auth from "./hoc/auth"
 import React from "react";
 
@@ -33,6 +35,8 @@ function App(props) {
         <Route exact path="/register" component={Auth(RegisterPage, false)}/>
         <Route exact path="/game" component={Auth(GamePage, null)}/>
         <Route exact path="/gameRoom" component={Auth(GameRoom, null)}/>
+        <Route exact path="/resultPage_win" component={Auth(WinPage, null)}/>
+        <Route exact path="/resultPage_loose" component={Auth(LoosePage, null)}/>
       </Switch>
     </div>
   </Router>

@@ -56,7 +56,9 @@ wss.on('connection', function connection(ws){
                 else{
                     wss.clients.forEach((i) =>{
                         if (i.readyState === WebSocket.OPEN) {
-                        i.send(`{"message":"User_Come", "userList" : "${room.clientList}", "roomID":"${k.roomID}"}`)
+                            let userNameList = room.clientList.map(i => i.name)
+                            let userImageList = room.clientList.map(i => i.image)
+                        i.send(`{"message":"User_Come", "userNameList" : "${userNameList}", "roomID":"${k.roomID}", "userImageList":"${userImageList}"}`)
                         }
                     })
                 }
@@ -209,7 +211,7 @@ app.post('/api/joinRoom', (req, res) =>{
                 if(cl.length>=2){
                     return({success:false, error:"room is full"})
                 }
-                cl.push(user.name)
+                cl.push(user)
                 Room.updateOne({"url":req.body.url}, {"clientList": cl}, (e)=>{
                     if(e) throw e
                     res.status(200).json({joinSuccess:true, turn:cl.length})
@@ -233,8 +235,10 @@ app.post('/api/outRoom',  (req, res) =>{
         User.findByToken(token, (err, user)=>{
             if(err) throw err;
             if(!user) return res.json({success:false, error:err})
-            let k = room.clientList
-            k.remove(user.name)
+            let p = room.clientList
+            console.log(p)
+            k = p.filter(i => i.name !== user.name)
+            console.log(k)
             if(k.length<=0){
                 Room.deleteOne({"url":req.body.url}, (e)=>{
                     if(e) throw e;

@@ -1,10 +1,11 @@
 import React from 'react'
 import Axios from 'axios'
 import { withRouter } from 'react-router'
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Breadcrumb,Button } from 'antd';
 import Modal from '../../modal/Modal';
 import MakeRoom from './MakeRoom';
 import Rooms from "./Rooms"
+
 import "./LandingPage.css"
 
 import {
@@ -79,10 +80,9 @@ class LandingPage extends React.Component {
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>개설된 방</Breadcrumb.Item>
             </Breadcrumb>
             <React.Fragment>
-            <button onClick={ this.openModal }>방만들기</button>
+            <Button size="large" className = "button" onClick={ this.openModal }>방 만들기</Button>
             <Modal open={ this.state.modalOpen } close={ this.closeModal } header="Create a game room">
                     <MakeRoom socket={this.props.socket}/>
               </Modal>

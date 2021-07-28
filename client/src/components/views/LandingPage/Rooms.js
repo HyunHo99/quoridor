@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux'
 import { withRouter } from 'react-router'
 import { getRoom, joinRoom } from '../../../_actions/room_action'
 import Modal from '../../modal/Modal';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Button } from 'antd';
 const socket = new WebSocket('ws://143.248.194.208:5000')
 
 
@@ -81,11 +81,11 @@ function Rooms(props) {
                     <label>방 비밀번호 : </label>
                     <input type="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)}></input>
                     <p/>
-                    <button onClick={joinHandler}>입장</button>
+                    <Button onClick={joinHandler}>입장</Button>
                 </Modal>
                 <Card title={roomChunk[i].roomName} bordered={false}>
                     <p>인원 : {roomChunk[i].clientList.length}/2</p>
-                    <button onClick={openModal(roomChunk[i])}>입장</button>
+                    <Button size="large" onClick={openModal(roomChunk[i])}>입장</Button>
                 </Card>
             </Col>)
         }

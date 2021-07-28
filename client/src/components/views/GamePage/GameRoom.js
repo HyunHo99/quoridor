@@ -1,15 +1,23 @@
 import React, {useRef, useEffect, useState} from 'react'
 import { withRouter } from 'react-router'
 import Axios from 'axios'
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
 import "./GameRoom.css"
+import rabbit from "../../../images/rabbit.png"
+import rat from "../../../images/rat.png"
+import shark from "../../../images/shark.png"
+import turtle from "../../../images/turtle.png"
+
+
 const socket = new WebSocket('ws://143.248.194.208:5000')
 
 function GameRoom(props) {
     var qs = require('qs')
     const roomID = Object.values(qs.parse(props.location.search))[0]
     const [userNames, setUserNames] = useState([])
+    const [userImgs, setUserImgs] = useState([])
     const [readyed, setReadyed] = useState(false)
+    const animalsList = [rabbit, shark, rat, turtle]
     var yame=true
 
     const room = props.location.state.detail
@@ -30,8 +38,8 @@ function GameRoom(props) {
                     }
                     if(k.message === "User_Come"){
                         if(k.roomID === roomID){
-                            console.log(k.userList.split(","))
-                            setUserNames(k.userList.split(","))
+                            setUserNames(k.userNameList.split(","))
+                            setUserImgs(k.userImageList.split(","))
                         }
             
                     }
@@ -61,15 +69,19 @@ function GameRoom(props) {
 
     return (
         <div className="site-card-wrapper"  style={{display: 'flex', flexDirection: 'column'}}>
-            <Card title={room.roomName} bordered={false} extra={<a onClick={backHandler}>방 나가기</a>} style={{ height: '95vh', background: '#f0f2f5'}}>
+            <Card title={<b className="head">방 이름  :  {room.roomName}</b>} bordered={false} extra={<a className="head" onClick={backHandler}>방 나가기</a>} style={{ height: '95vh', background: '#f0f2f5'}}>
             <div className="innerRoom">
                 <p>참가자 :
-                {userNames.map(user =>{
+                {userNames.map( (user,index) =>{
                     return(
-                        <p>{user}</p>
+                        <div className="userCard">
+                        <img className="userImage" src={animalsList[userImgs[index]-1]} style={{height:"20vh", width:"20vh"}}/>
+                        <div className="userText">{userNames[index]}</div>
+                        </div>
+                        
                     )
                 })}</p>
-                <button disabled={readyed} onClick={gameStartHandler}>준비!</button>
+                <Button size="large" disabled={readyed} onClick={gameStartHandler}>준비!</Button>
             </div>
             </Card>
         </div>

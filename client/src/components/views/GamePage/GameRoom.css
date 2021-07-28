@@ -1,10 +1,6 @@
-/* .ant-card {
+.ant-card {
     border-radius:10px !important;
 }
-.ant-card-head{
-    border-bottom: 1px solid #001529!important; 
-    border-radius: 5px 5px 0 0!important; 
-} */
 .ant-card-body{
     text-align:center;
     width:100%;
@@ -14,6 +10,7 @@
 .innerRoom{
     width:100%;
     height:100%;
+    font-size: 20px;
 }
 .site-card-wrapper {
   padding: 3vw;
@@ -23,4 +20,21 @@
 
 [data-theme="dark"] .site-card-wrapper {
   background: #001529
+}
+
+.userImage{
+    border-radius:10vh;
+    background: #001529;
+}
+.userCard{
+    padding:15px;
+    width:100%;
+}
+.userText{
+    padding:15px;
+    font-size: 20px;
+}
+
+.head{
+    font-size:30px;
 }
