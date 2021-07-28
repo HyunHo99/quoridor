@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
         type:Number,
         default:0
     },
-    image:String,
+    image:String, //0이면 거북이 1이면 토끼 2면 쥐 3이면 상어
     token: {
         type:String
     },

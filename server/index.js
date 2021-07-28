@@ -58,9 +58,6 @@ wss.on('connection', function connection(ws){
                         if (i.readyState === WebSocket.OPEN) {
                         i.send(`{"message":"User_Come", "userList" : "${room.clientList}", "roomID":"${k.roomID}"}`)
                         }
-                        else{
-                            i.destroy()
-                        }
                     })
                 }
             })
@@ -87,10 +84,9 @@ wss.on('connection', function connection(ws){
                     let endX = 16 - k.endX
                     let endY = 16 - k.endY
                     wss.clients.forEach((i) => {
-                        if (client.readyState === WebSocket.OPEN) {
+                        if (i.readyState === WebSocket.OPEN) {
                             if(i!=ws){
                                 i.send(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}", "roomID":"${k.roomID}"}`)
-                                console.log(`{"message":"${k.message}", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}", "roomID":"${k.roomID}"}`)
                             }
                     }
                     })
@@ -109,10 +105,7 @@ const sendMessage = function(message, roomID, ws, wss){
                 if (i.readyState === WebSocket.OPEN) {
                     if(i!==ws){
                         i.send(`{"message":"${message}", "roomID":"${roomID}"}`)
-                        console.log(`server send : ${message}`)
                     }
-            }else{
-                i.destroy()
             }
             })
         
