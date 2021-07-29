@@ -170,7 +170,7 @@ export class Player {
             case 'left':
                 if(x<2) return [new Board(board),false]
                 if(board[y][x-1]!==1){
-                    if(board[y][x-2]===1){
+                    if(board[y][x-2]!==0){
                         if(x>=4){
                             this.x -=4
                             board[y][this.x]=board[y][x]
@@ -190,7 +190,7 @@ export class Player {
             case 'right':  
                 if(x>15) return [new Board(board),false]
                 if(board[y][x+1]!==1){
-                    if(board[y][x+2]===1){
+                    if(board[y][x+2]!==0){
                         if(x<=12){
                             this.x +=4
                             board[y][this.x]=board[y][x]
@@ -211,7 +211,7 @@ export class Player {
             case 'up':   
                 if(y<2) return [new Board(board),false]
                 if(board[y-1][x]!==1){
-                    if(board[y-2][x]===1){
+                    if(board[y-2][x]!==0){
                         if(y>=4){
                             this.y -=4
                             board[this.y][x]=board[y][x]
@@ -231,7 +231,7 @@ export class Player {
             case 'down':  
                 if(y>15) return [new Board(board),false]
                 if(board[y+1][x]!==1){
-                    if(board[y+2][x]===1){
+                    if(board[y+2][x]!==0){
                         if(y<=12){
                             this.y +=4
                             board[this.y][x]=board[y][x]

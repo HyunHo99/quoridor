@@ -44,6 +44,7 @@ function Rooms(props) {
         }
         dispatch(joinRoom(body)).then(response =>{
             if(response.payload.joinSuccess){
+                props.socket.send(`{"roomID": "${modalRoom.url}", "message":"Request_Setup"}`)
                 props.history.push({
                     pathname : `/gameRoom`,
                     search : `?id=${modalRoom.url}`,

@@ -221,7 +221,7 @@ app.post('/api/joinRoom', (req, res) =>{
     })
 })
 
-app.post('/api/outRoom',  (req, res) =>{
+app.post('/api/outRoom', (req, res) =>{
     console.log("outRoomCalled")
     Room.findOne({"url" : req.body.url}, function (err, room){
         if(!room){
@@ -254,6 +254,23 @@ app.post('/api/outRoom',  (req, res) =>{
         }
     })
 })
+})
+
+app.post('/api/startGame', auth, (req, res)=>{
+    console.log("gameStart Called")
+    Room.findOne({"url" : req.body.url}, function (err, room){
+        if(err) throw err;
+        if(!room){
+            return res.json({
+            outSuccess : false,
+            body : req.body.url,
+            message:"해당하는 방은 존재하지 않습니다."
+            })
+        }
+        res.status(200).json({userNameList : room.clientList.map(i => i.name), userImageList : room.clientList.map(i => i.image),
+            userName:req.user.name})
+    }
+    )
 })
 
 

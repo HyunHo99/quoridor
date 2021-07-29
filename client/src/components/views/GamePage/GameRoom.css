@@ -69,7 +69,71 @@
 }
 
 .BackBoard{
-    padding:15px;
     text-align:center;
     background-image: url(../../../images/see.jpg);
+}
+
+.MyProfile{
+    padding-top: 5vh;
+    padding-left: 30vw;
+    padding-right: 30vw;
+    height:32vh;
+}
+.Control{
+    padding-top:4vh;
+    height: 100%;
+    background-color: white;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-top:1px solid #000000;
+    border-left:1px solid #000000;
+    border-right:1px solid #000000;
+}
+
+.Profile_Img{
+    height: 120px;
+    width: 120px;
+    background: #001529;
+    border-radius: 60px;
+    position : absolute;
+}
+.Profile_Text{
+    font-size:30px;
+    padding-top:5vh;
+    padding-left: 10vw;
+    position : absolute;
+}
+.UserProfile{
+    position : absolute;
+    padding-right: 9vw;
+    padding-left: 5vw;
+}
+
+.Pannal{
+    position : absolute;
+    padding-left :25vw;
+}
+
+.CompatitorProfile{
+    padding-bottom: 5vh;
+    padding-left: 30vw;
+    padding-right: 30vw;
+    height:32vh;
+}
+
+.Comp_Control{
+    padding-top:4vh;
+    height: 100%;
+    background-color: white;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border-bottom:1px solid #000000;
+    border-left:1px solid #000000;
+    border-right:1px solid #000000;
+}
+
+.Comp_text{
+    padding-left: 20vw;
+    padding-top: 6vh;
+    font-size: 25px;
 }

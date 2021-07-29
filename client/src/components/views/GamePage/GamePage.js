@@ -12,57 +12,87 @@ import Black_Img from '../../../images/black.png'
 import Background_Img from '../../../images/background.png'
 import Void_Img from '../../../images/void.png'
 import Red_Img from '../../../images/red.png'
+import Thumb_Rabbit from '../../../images/rabbit.png'
+import Thumb_Shark from '../../../images/shark.png'
+import Thumb_Turtle from '../../../images/turtle.png'
+import Thumb_Rat from '../../../images/rat.png'
 
-const socket = new WebSocket('ws://143.248.194.208:5000')
+
+
 
 function GamePage(props) {
     var qs = require('qs')
+    const imgList = [Rabbit_Img,Shark_Img,Rat_Img,Turtle_Img]
+    const thumbList = [Thumb_Rabbit, Thumb_Shark, Thumb_Rat, Thumb_Turtle]
+    const userNames = props.location.state.userNames
+    const userName = props.location.state.userName
+    console.log(userNames)
+    console.log(userName)
+    const userImgs = props.location.state.userImgs
+    const playerIndex = userNames.findIndex(i => i==String(userName))
 
-    const [gameboard, setGameboard] = useState(new Board())
-    const [player1, setplayer1] = useState(new Player(0, 8, [16, 8]))
-    const [player2, setplayer2] = useState(new Player(16, 8, [0, 8]))
+    const player_Thumb_Img = thumbList[userImgs[playerIndex]-1]
+    const compatitor_Thumb_Img = thumbList[userImgs[playerIndex==0 ? 1:0]-1]
+    const player_Board_Img = imgList[userImgs[playerIndex]-1]
+    const compatitor_Board_Img = imgList[userImgs[playerIndex==0 ? 1:0]-1]
+
+
+
+    const socket = props.socket
+    const gameboard_item = JSON.parse(localStorage.getItem("gameboard"));
+    const turn_item = localStorage.getItem("turn");
+    const player1_item = JSON.parse(localStorage.getItem("player1"));
+    const player2_item = JSON.parse(localStorage.getItem("player2"));
+    const [gameboard, setGameboard] = useState(gameboard_item==null ? new Board() : new Board(gameboard_item.board))
+    const [player1, setplayer1] = useState(player1_item==null ? new Player(0, 8, [16, 8]) : new Player(player1_item.y, player1_item.x, player1_item.destination))
+    const [player2, setplayer2] = useState(player2_item==null ? new Player(16, 8, [0, 8]) : new Player(player2_item.y, player2_item.x, player2_item.destination))
     const [turn, setTurn] = useState(0)
     const roomID = Object.values(qs.parse(props.location.search))[0]
     const Im_Player = Number(Object.values(qs.parse(props.location.search))[1])
-    const [controlState, setControlState] = useState(0)
     const [wallPoints, setWallPoints] = useState([])
 
-    useEffect(() => {
-        setTurn(Im_Player)
-        socket.addEventListener('message', (data) => {
-            let k = JSON.parse(data.data)
-            console.log(k)
-            if (k.roomID === roomID) {
-                if (k.message === "Move_Up") {
-                    upHandler1()
-                }
-                if (k.message === "Move_Left") {
-                    leftHandler1()
-                }
-                if (k.message === "Move_Right") {
-                    rightHandler1()
-                }
-                if (k.message === "Move_Down") {
-                    downHandler1()
-                }
-                if (k.message === "Make_Wall") {
-                    let a = String(k.startX)
-                    let b = String(k.startY)
-                    let c = String(k.endX)
-                    let d = String(k.endY)
-                    console.log(a, b, c, d)
-                    onSubmitHandler1()
-                    if (gameboard.makeWall([a, b], [c, d])) {
-                        gameboard.updateCannotMakeWall([player1, player2])
-                        console.log(gameboard.board)
-                        setGameboard(Object.create(gameboard))
-                        setTurn((turn + 1) % 2)
-                    }
-                }
-
-
+    const messageHandler = (data) => {
+        let k = JSON.parse(data.data)
+        console.log(k)
+        if (k.roomID === roomID) {
+            if (k.message === "Move_Up") {
+                upHandler1()
             }
-        })
+            if (k.message === "Move_Left") {
+                leftHandler1()
+            }
+            if (k.message === "Move_Right") {
+                rightHandler1()
+            }
+            if (k.message === "Move_Down") {
+                console.log("message", gameboard.board)
+                downHandler1()
+            }
+            if (k.message === "Make_Wall") {
+                let a = String(k.startX)
+                let b = String(k.startY)
+                let c = String(k.endX)
+                let d = String(k.endY)
+                console.log(a, b, c, d)
+                if (gameboard.makeWall([a, b], [c, d])) {
+                    gameboard.updateCannotMakeWall([player1, player2])
+                    console.log(gameboard.board)
+                    setGameboard(new Board(gameboard.board))
+                    setTurn((turn + 1) % 2)
+                }
+            }
+
+
+        }
+    }
+
+    useEffect(() => {
+        console.log(turn_item)
+        setTurn(turn_item==null ? Im_Player : Number(turn_item))
+        socket.addEventListener('message', messageHandler)
+        return () =>{
+            socket.removeEventListener('message', messageHandler)
+        }
     }, [])
 
     const Game_End = (who) => {
@@ -72,6 +102,8 @@ function GamePage(props) {
             props.history.push(`/resultPage_loose`)
         }
     }
+
+
     const checkWin = function (player, who) {
         if (player.y === player.destination[0] && player.x === player.destination[1]) {
             console.log(who)
@@ -81,30 +113,7 @@ function GamePage(props) {
     }
 
 
-  useEffect(() => {
-    const gameboard_item = JSON.parse(localStorage.getItem("gameboard"));
-    const turn_item = localStorage.getItem("turn");
-    const player1_item = JSON.parse(localStorage.getItem("player1"));
-    const player2_item = JSON.parse(localStorage.getItem("player2"));
-    console.log("gameboard_item", gameboard_item);
-    console.log("player2", player2_item);
-    if (gameboard_item) setGameboard(new Board(gameboard_item.board));
-    if (turn_item) {
-        console.log("turn_item", turn_item);
-        console.log(typeof(turn_item))
-        setTurn(Number(turn_item));
-    }
-    if (player1_item)
-      setplayer1(
-        new Player(player1_item.y, player1_item.x, player1_item.destination)
-      );
-    if (player2_item) {
-      console.log("setplayer2 function called");
-      setplayer2(
-        new Player(player2_item.y, player2_item.x, player2_item.destination)
-      );
-    }
-  }, []);
+
 
   useEffect(() => {
     localStorage.setItem("gameboard", JSON.stringify(gameboard));
@@ -115,7 +124,7 @@ function GamePage(props) {
 
 
     const upHandler1 = () => {
-        console.log("upHandler1 run")
+        console.log("upHandler1 run", gameboard.board,player1)
         const k = player1.goto('up', gameboard.board)
         if (k[1]) {
             setGameboard(k[0])
@@ -126,7 +135,7 @@ function GamePage(props) {
         }
     }
     const leftHandler1 = () => {
-        console.log("leftHandler1 run")
+        console.log("leftHandler1 run", gameboard.board,player1)
         const k = player1.goto('left', gameboard.board)
         if (k[1]) {
             setGameboard(k[0])
@@ -137,7 +146,7 @@ function GamePage(props) {
         }
     }
     const rightHandler1 = () => {
-        console.log("rightHandler1 run")
+        console.log("rightHandler1 run", gameboard.board,player1)
         const k = player1.goto('right', gameboard.board)
         if (k[1]) {
             setTurn((turn + 1) % 2)
@@ -148,8 +157,11 @@ function GamePage(props) {
         }
     }
     const downHandler1 = () => {
-        console.log("downHandler1 run")
+        console.log("downHandler1 run", gameboard.board,player1)
+        console.log("player1",player1)
+        console.log(gameboard.board)
         const k = player1.goto('down', gameboard.board)
+        console.log(k)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
@@ -160,6 +172,7 @@ function GamePage(props) {
         }
     }
     const upHandler2 = () => {
+        setWallPoints([])
         const k = player2.goto('up', gameboard.board)
         console.log(k)
         if (k[1]) {
@@ -173,6 +186,7 @@ function GamePage(props) {
 
     }
     const leftHandler2 = () => {
+        setWallPoints([])
         const k = player2.goto('left', gameboard.board)
         console.log(k)
         if (k[1]) {
@@ -185,6 +199,7 @@ function GamePage(props) {
         }
     }
     const rightHandler2 = () => {
+        setWallPoints([])
         const k = player2.goto('right', gameboard.board)
         console.log(k)
         if (k[1]) {
@@ -198,6 +213,7 @@ function GamePage(props) {
         }
     }
     const downHandler2 = () => {
+        setWallPoints([])
         const k = player2.goto('down', gameboard.board)
         console.log(k)
         if (k[1]) {
@@ -209,31 +225,19 @@ function GamePage(props) {
             checkWin(player2, 2)
         }
     }
-    const onSubmitHandler1 = () => {
-
-    }
     const onSubmitHandler2 = ([startX, startY], [endX, endY]) => {
         if (gameboard.makeWall([startX, startY], [endX, endY])) {
             gameboard.updateCannotMakeWall([player1, player2])
             console.log(gameboard.board)
-            setGameboard(Object.create(gameboard))
+            setGameboard(new Board(gameboard.board))
             setTurn((turn + 1) % 2)
             socket.send(`{"roomID":"${roomID}", "message":"Make_Wall", "startX":"${startX}", "startY":"${startY}", "endX":"${endX}", "endY":"${endY}"}`)
         }
     }
 
-    const ChooseMoveHandler = () =>{
-        setControlState(1)
-        setWallPoints([])
-    }
-
-    const ChooseMakeWallHandler = () =>{
-        setControlState(2)
-    }
-
     const OnClickHandler_MakeWall = (x, y) => () =>{
         console.log(x,y,"Clicked")
-        if(controlState===2){
+        if(turn){
             if(wallPoints.length===2){
                 onSubmitHandler2(wallPoints,[x,y])
                 setWallPoints([])
@@ -246,9 +250,10 @@ function GamePage(props) {
                 setWallPoints([x,y])
             }
         }
+        
     }
     function MakeWall_Bt(x,y){
-        return (<img src={Black_Img} onMouseOver={(e)=> e.currentTarget.src=Red_Img}
+        return (<img src={Black_Img} onMouseOver={(e)=>  e.currentTarget.src=Red_Img}
         onMouseOut={(e) => e.currentTarget.src=Black_Img}
          onClick={OnClickHandler_MakeWall(x,y)} className="MakeWall_Bt BackColor "></img>)
     }
@@ -256,7 +261,19 @@ function GamePage(props) {
 
     return (
         <div>
+            
             <div className="BackBoard BackColor">
+            <div className="CompatitorProfile">
+                <div className="Comp_Control">
+                    <div className="UserProfile">
+                        <img className="Profile_Img" src={compatitor_Thumb_Img}/>
+                        <div className="Profile_Text">{userNames[playerIndex==0 ? 1 : 0]}</div>
+                    </div>
+                    <div className="Comp_text">{turn==1 ? "":"상대가 고민중..."}</div>
+                </div>
+            </div>
+
+                <div className="GamePan">
                 <div className="Board">
                     {(new Array(19).fill(0)).map((i, index) => {
                         if (index % 2 == 0 &&index!==0 && index!==18) {
@@ -294,8 +311,8 @@ function GamePage(props) {
                                     }
                                     return (<img src={Void_Img} className="Col-Wall BackColor" ></img>)
                                 }
-                                if (x === 1) return (<img className="Square" src={Shark_Img} />)
-                                if (x === 2) return (<img className="Square" src={Rabbit_Img} />)
+                                if (x === 1) return (<img className="Square" src={player_Board_Img} />)
+                                if (x === 2) return (<img className="Square" src={compatitor_Board_Img} />)
                                 return (<img src={Void_Img} className="Square" />)
                             })}
                             {[index].map(i => { if (i % 2 === 1) return (MakeWall_Bt(17,index)) })}
@@ -313,22 +330,25 @@ function GamePage(props) {
                         }
                     })}
                 </div>
+                </div>
+                <div className="MyProfile">
+                <div className="Control">
+                    <div className="UserProfile">
+                        <img className="Profile_Img" src={player_Thumb_Img}/>
+                        <div className="Profile_Text">{userNames[playerIndex]}</div>
+                    </div>
+                    <div className="Pannal">
+                    <div className="TurnText">{turn==1 ? "나의 턴!":"상대가 고민중..."}</div>
+                    <button disabled={!turn} onClick={upHandler2}>Up</button>
+                    <br/>
+                    <button disabled={!turn} onClick={leftHandler2}>left</button>
+                    <button disabled={!turn} onClick={rightHandler2}>right</button>
+                    <br/>
+                    <button disabled={!turn} onClick={downHandler2}>down</button>
+                    </div>
+                </div>
             </div>
-            {/* <button disabled={!turn} onClick={upHandler2}>Up2</button>
-        <button disabled={!turn} onClick={leftHandler2}>left2</button>
-        <button disabled={!turn} onClick={rightHandler2}>right2</button>
-        <button disabled={!turn} onClick={downHandler2}>down2</button>
-        <button disabled={!turn} onClick={onSubmitHandler2}>makeWall2</button> */}
-            <button disabled={false} onClick={ChooseMoveHandler}>Choose Move</button>
-            <button disabled={false} onClick={ChooseMakeWallHandler}>Choose MakeWall</button>
-
-
-            {(controlState==1) && <button disabled={false} onClick={upHandler2}>Up2</button>}
-            {(controlState==1) && <button disabled={false} onClick={leftHandler2}>left2</button>}
-            {(controlState==1) && <button disabled={false} onClick={rightHandler2}>right2</button>}
-            {(controlState==1) && <button disabled={false} onClick={downHandler2}>down2</button>}
-            {(controlState==2) && <button disabled={false} onClick={onSubmitHandler2}>makeWall2</button>}
-            <p>{turn}</p>
+            </div>
         </div>
     )
 }

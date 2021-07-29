@@ -29,7 +29,7 @@ function MakeRoom(props) {
                     }
                     dispatch(joinRoom(joinbody)).then(response2 =>{
                         if(response2.payload.joinSuccess){
-                            
+                            props.socket.send(`{"roomID": "${response.payload.room.url}", "message":"Request_Setup"}`)
                             props.history.push({
                                 pathname : `/gameRoom`,
                                 search : `?id=${response.payload.room.url}`,
