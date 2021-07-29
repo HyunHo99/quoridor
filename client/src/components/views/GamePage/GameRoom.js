@@ -8,7 +8,7 @@ import rat from "../../../images/rat.png";
 import shark from "../../../images/shark.png";
 import turtle from "../../../images/turtle.png";
 
-const socket = new WebSocket('ws://143.248.194.208:5000')
+const socket = new WebSocket("ws://143.248.197.173:5000");
 
 function GameRoom(props) {
   var qs = require("qs");
@@ -18,38 +18,37 @@ function GameRoom(props) {
   const [readyed, setReadyed] = useState(false);
   const animalsList = [rabbit, shark, rat, turtle];
 
-    const room = props.location.state.detail
-    console.log(room)
-    useEffect(() => {
-            socket.addEventListener('open', ()=>{
-                socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`)
-            })
-            socket.addEventListener('message',(data)=>{
-                let k = JSON.parse(data.data)
-                console.log(k)
-                    if(k.roomID===roomID){
-                    if(k.message ==="Game_Start"){
-                        props.history.push(`/game?id=${roomID}&turn=${k.turn}`)
-                    }
-                    if(k.message ==="Ready_Success"){
-                        console.log(k.message)
-                        setReadyed(true)
-                    }
-                    if(k.message === "User_Come"){
-                        if(k.roomID === roomID){
-                            setUserNames(k.userNameList.split(","))
-                            setUserImgs(k.userImageList.split(","))
-                        }
-            
-                    }
-            }
-            })
-            socket.addEventListener("open", () => {
-                socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`);
-            });
-    
+  const room = props.location.state.detail;
+  console.log(room);
+  useEffect(() => {
+    socket.addEventListener("open", () => {
+      socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`);
+    });
+    socket.addEventListener("message", (data) => {
+      let k = JSON.parse(data.data);
+      console.log(k);
+      if (k.roomID === roomID) {
+        if (k.message === "Game_Start") {
+          props.history.push(`/game?id=${roomID}&turn=${k.turn}`);
+        }
+        if (k.message === "Ready_Success") {
+          console.log(k.message);
+          setReadyed(true);
+        }
+        if (k.message === "User_Come") {
+          if (k.roomID === roomID) {
+            setUserNames(k.userNameList.split(","));
+            setUserImgs(k.userImageList.split(","));
+          }
+        }
+      }
+    });
+    socket.addEventListener("open", () => {
+      socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`);
+    });
+
     return () => {};
-        }, []);
+  }, []);
 
   const gameStartHandler = () => {
     socket.send(`{"roomID": "${roomID}", "message":"Game_Start"}`);
