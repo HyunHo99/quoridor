@@ -107,6 +107,7 @@ function GamePage(props) {
             Game_End(who)
             return true
         }
+    }
 
   useEffect(() => {
     localStorage.setItem("gameboard", JSON.stringify(gameboard));
@@ -345,7 +346,6 @@ function GamePage(props) {
             <VideoChatApp roomid={roomID} />
         </div>
     )
-}
 }
 
 export default withRouter(GamePage);

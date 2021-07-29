@@ -288,7 +288,7 @@ app1.post("/api/joinRoom", (req, res) => {
     })
 })
 
-app.post('/api/outRoom', (req, res) =>{
+app1.post('/api/outRoom', (req, res) =>{
     console.log("outRoomCalled")
     Room.findOne({"url" : req.body.url}, function (err, room){
         if(!room){
@@ -323,7 +323,7 @@ app.post('/api/outRoom', (req, res) =>{
 })
 })
 
-app.post('/api/startGame', auth, (req, res)=>{
+app1.post('/api/startGame', auth, (req, res)=>{
     console.log("gameStart Called")
     Room.findOne({"url" : req.body.url}, function (err, room){
         if(err) throw err;
