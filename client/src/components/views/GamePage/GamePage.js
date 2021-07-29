@@ -1,8 +1,7 @@
-
-import React, { useState, useEffect } from 'react'
-import { Board, Player, existPath } from './tools'
-import { withRouter } from 'react-router'
-
+import React, { useState, useEffect } from "react";
+import { Board, Player, existPath } from "./tools";
+import { withRouter } from "react-router";
+import VideoChatApp from "../../connection/videoChat";
 import Wall_Img from '../../../images/wall.png'
 import Rabbit_Img from '../../../images/rabbit_board.png'
 import Shark_Img from '../../../images/shark_board.png'
@@ -81,8 +80,6 @@ function GamePage(props) {
                     setTurn((turn + 1) % 2)
                 }
             }
-
-
         }
     }
 
@@ -110,10 +107,6 @@ function GamePage(props) {
             Game_End(who)
             return true
         }
-    }
-
-
-
 
   useEffect(() => {
     localStorage.setItem("gameboard", JSON.stringify(gameboard));
@@ -349,10 +342,10 @@ function GamePage(props) {
                 </div>
             </div>
             </div>
+            <VideoChatApp roomid={roomID} />
         </div>
     )
 }
-
-
+}
 
 export default withRouter(GamePage);

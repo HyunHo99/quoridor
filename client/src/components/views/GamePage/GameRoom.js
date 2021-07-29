@@ -60,7 +60,7 @@ function GameRoom(props) {
                 console.log("message send")
             })
     return () => {};
-        }, []);
+  }, []);
 
     const gameStartHandler = () => {
     socket.send(`{"roomID": "${roomID}", "message":"Game_Start"}`);
