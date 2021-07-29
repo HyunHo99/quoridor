@@ -11,7 +11,7 @@ import RegisterPage from "./components/views/RegisterPage/RegisterPage"
 import GamePage from "./components/views/GamePage/GamePage"
 import GameRoom from "./components/views/GamePage/GameRoom"
 import WinPage from "./components/views/ResultPage/WinPage"
-import LoosePage from "./components/views/ResultPage/LoosePage"
+import LosePage from "./components/views/ResultPage/LosePage"
 import Auth from "./hoc/auth"
 import React from "react";
 
@@ -36,7 +36,7 @@ function App(props) {
         <Route exact path="/game" component={Auth(GamePage, null, props)}/>
         <Route exact path="/gameRoom" component={Auth(GameRoom, null, props)}/>
         <Route exact path="/resultPage_win" component={Auth(WinPage, null, props)}/>
-        <Route exact path="/resultPage_loose" component={Auth(LoosePage, null, props)}/>
+        <Route exact path="/resultPage_lose" component={Auth(LosePage, null, props)}/>
       </Switch>
     </div>
   </Router>

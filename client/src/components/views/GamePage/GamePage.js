@@ -96,7 +96,7 @@ function GamePage(props) {
         if (who === 2) {
             props.history.push(`/resultPage_win`)
         } else {
-            props.history.push(`/resultPage_loose`)
+            props.history.push(`/resultPage_lose`)
         }
     }
 
