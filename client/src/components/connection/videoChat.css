@@ -1,0 +1,18 @@
+.web-cam { 
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+.video-div{
+    display:inline-block;
+}
+
+.main-view{
+    float: center;
+    width: 600px;
+}
+
+#startchatbutton{
+    height: 50px;
+    background-color: white
+}

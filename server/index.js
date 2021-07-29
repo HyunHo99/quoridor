@@ -28,8 +28,13 @@ io.on("connection", function (socket_io) {
     socket_io.join(roomId); //  make the current socket to join the room
     console.log("roomId: ", roomId);
     console.log("userId: ", userId);
-    socket_io.broadcast.to(roomId).emit("user-connected", userId);
+    socket_io.broadcast.to(roomId).emit("user-connected-socket-to-1st-user", userId);
   });
+
+  socket_io.on("my-socketid", (roomId, userId)=>{
+    socket_io.broadcast.to(roomId).emit("user-connected-socket-to-2nd-user", userId);
+  })
+
   socket_io.on("callUser", (data) => {
     io.to(data.userToCall).emit("hey", {
       signal: data.signalData,

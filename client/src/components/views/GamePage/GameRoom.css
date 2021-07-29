@@ -90,23 +90,21 @@
     border-right:1px solid #000000;
 }
 
-.Profile_Img{
-    height: 120px;
-    width: 120px;
-    background: #001529;
-    border-radius: 60px;
-    position : absolute;
-}
+
 .Profile_Text{
     font-size:30px;
-    padding-top:5vh;
-    padding-left: 10vw;
     position : absolute;
+    display:inline-block;
+    margin-left: 4vw;
+    padding-top: 5.5vh;
 }
+
 .UserProfile{
     position : absolute;
     padding-right: 9vw;
     padding-left: 5vw;
+    display: flex;
+    justify-content: center;
 }
 
 .Pannal{
@@ -119,11 +117,15 @@
     padding-left: 30vw;
     padding-right: 30vw;
     height:32vh;
+    display: flex;
+    justify-content: center;
 }
 
 .Comp_Control{
     padding-top:4vh;
     height: 100%;
+    margin: 0 auto;
+    width: 150%;
     background-color: white;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
