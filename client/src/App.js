@@ -33,10 +33,10 @@ function App(props) {
         <Route exact path="/" component={Auth(LandingPage, null, props)}/>
         <Route exact path="/login" component={Auth(LoginPage, false, props)}/>
         <Route exact path="/register" component={Auth(RegisterPage, false, props)}/>
-        <Route exact path="/game" component={Auth(GamePage, null, props)}/>
-        <Route exact path="/gameRoom" component={Auth(GameRoom, null, props)}/>
-        <Route exact path="/resultPage_win" component={Auth(WinPage, null, props)}/>
-        <Route exact path="/resultPage_lose" component={Auth(LosePage, null, props)}/>
+        <Route exact path="/game" component={Auth(GamePage, true, props)}/>
+        <Route exact path="/gameRoom" component={Auth(GameRoom, true, props)}/>
+        <Route exact path="/resultPage_win" component={Auth(WinPage, true, props)}/>
+        <Route exact path="/resultPage_lose" component={Auth(LosePage, true, props)}/>
       </Switch>
     </div>
   </Router>

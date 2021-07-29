@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Peer from "simple-peer";
 import styled from "styled-components";
 
-const socket = io("ws://143.248.197.173:443");
+const socket = io("ws://143.248.194.208:443");
 
 const Container = styled.div`
   height: 100vh;
