@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import { Board, Player, existPath } from './tools'
 import { withRouter } from 'react-router'
@@ -12,10 +13,7 @@ import Background_Img from '../../../images/background.png'
 import Void_Img from '../../../images/void.png'
 import Red_Img from '../../../images/red.png'
 
-
 const socket = new WebSocket('ws://143.248.194.208:5000')
-
-
 
 function GamePage(props) {
     var qs = require('qs')
@@ -26,7 +24,6 @@ function GamePage(props) {
     const [turn, setTurn] = useState(0)
     const roomID = Object.values(qs.parse(props.location.search))[0]
     const Im_Player = Number(Object.values(qs.parse(props.location.search))[1])
-    const temp = new Array(19).fill(0)
     const [controlState, setControlState] = useState(0)
     const [wallPoints, setWallPoints] = useState([])
 
@@ -67,7 +64,7 @@ function GamePage(props) {
             }
         })
         
-    }, [])
+    }, [socket])
 
     const Game_End = (who) => {
         if (who === 2) {
@@ -76,15 +73,50 @@ function GamePage(props) {
             props.history.push(`/resultPage_loose`)
         }
     }
-
     const checkWin = function (player, who) {
         if (player.y === player.destination[0] && player.x === player.destination[1]) {
             console.log(who)
             Game_End(who)
             return true
         }
-        else return false
     }
+
+
+  useEffect(() => {
+    const gameboard_item = JSON.parse(localStorage.getItem("gameboard"));
+    const turn_item = localStorage.getItem("turn");
+    const player1_item = JSON.parse(localStorage.getItem("player1"));
+    const player2_item = JSON.parse(localStorage.getItem("player2"));
+    console.log("gameboard_item", gameboard_item);
+    console.log("player2", player2_item);
+    if (gameboard_item) setGameboard(gameboard_item);
+    if (turn_item) setTurn(turn_item);
+    if (player1_item)
+      setplayer1(
+        new Player(player1_item.y, player1_item.x, player1_item.destination)
+      );
+    if (player2_item) {
+      console.log("setplayer2 function called");
+      setplayer2(
+        new Player(player2_item.y, player2_item.x, player2_item.destination)
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("gameboard", JSON.stringify(gameboard));
+    localStorage.setItem("turn", turn);
+    localStorage.setItem("player1", JSON.stringify(player1));
+    localStorage.setItem("player2", JSON.stringify(player2));
+  }, [gameboard, turn, player1, player2]);
+
+  //   useEffect(() => {
+  //     setGameboard(JSON.parse(localStorage.getItem("gameboard")));
+  //     setTurn(JSON.parse(localStorage.getItem("turn")));
+  //     setplayer1(JSON.parse(localStorage.getItem("player1")));
+  //     setplayer2(JSON.parse(localStorage.getItem("player2")));
+  //   }, []);
+
 
     const upHandler1 = () => {
         const k = player1.goto('up', gameboard.board)
@@ -222,7 +254,7 @@ function GamePage(props) {
         <div>
             <div className="BackBoard BackColor">
                 <div className="Board">
-                    {temp.map((i, index) => {
+                    {(new Array(19).fill(0)).map((i, index) => {
                         if (index % 2 == 0 &&index!==0 && index!==18) {
                             return (MakeWall_Bt(index-1,-1))
                         }
@@ -268,7 +300,7 @@ function GamePage(props) {
                     )
                 })}
                 <div className="Board">
-                    {temp.map((i, index) => {
+                    {(new Array(19).fill(0)).map((i, index) => {
                         if (index % 2 == 0 &&index!==0 && index!==18) {
                             return (MakeWall_Bt(index-1,17))
                         }
@@ -295,8 +327,8 @@ function GamePage(props) {
             <p>{turn}</p>
         </div>
     )
-
-
 }
 
-export default withRouter(GamePage)
+
+
+export default withRouter(GamePage);
