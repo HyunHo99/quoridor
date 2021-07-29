@@ -63,8 +63,7 @@ function GamePage(props) {
 
             }
         })
-        
-    }, [socket])
+    }, [])
 
     const Game_End = (who) => {
         if (who === 2) {

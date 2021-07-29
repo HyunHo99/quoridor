@@ -28,6 +28,13 @@ class LandingPage extends React.Component {
     modalOpen: false
   };
 
+  
+  componentDidMount() {
+    localStorage.clear();
+  }
+
+
+
   openModal = () => {
     this.setState({ modalOpen: true })
   }
