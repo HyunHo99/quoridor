@@ -45,11 +45,14 @@ function GameRoom(props) {
                     }
             }
             })
+            socket.addEventListener('open', ()=>{
+                socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`)
+            })
     }
         return () => {
             
         }
-    })
+    },[])
 
 
 

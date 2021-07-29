@@ -201,7 +201,7 @@ function GamePage(props) {
                 <li key={index}>
                     {val.map((x, index2)=>{
                         if(index2%2===1 && index%2===1){
-                            return (" ")
+                            return (<button></button>)
                         }
                         if(index2%2===0 && index%2===1){
                             if(gameboard.board[index][index2]===1){
@@ -215,7 +215,7 @@ function GamePage(props) {
                             }
                             return("|")
                         }
-                        else return (x)
+                        else return (<button>{x}</button>)
                     })}
                 </li>
             )

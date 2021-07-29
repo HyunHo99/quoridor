@@ -3,7 +3,6 @@ import {makeRoom, joinRoom} from '../../../_actions/room_action'
 import {useDispatch} from 'react-redux'
 import { Button } from 'antd';
 import { withRouter } from 'react-router'
-const socket = new WebSocket('ws://143.248.194.208:5000')
 
 function MakeRoom(props) {
     
@@ -30,7 +29,7 @@ function MakeRoom(props) {
                     }
                     dispatch(joinRoom(joinbody)).then(response2 =>{
                         if(response2.payload.joinSuccess){
-                            socket.send(`{"roomID": "${response.payload.room.url}", "message":"Request_Setup"}`)
+                            
                             props.history.push({
                                 pathname : `/gameRoom`,
                                 search : `?id=${response.payload.room.url}`,

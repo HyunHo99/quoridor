@@ -4,7 +4,6 @@ import { withRouter } from 'react-router'
 import { getRoom, joinRoom } from '../../../_actions/room_action'
 import Modal from '../../modal/Modal';
 import { Card, Col, Row, Button } from 'antd';
-const socket = new WebSocket('ws://143.248.194.208:5000')
 
 
 function Rooms(props) {
@@ -45,7 +44,6 @@ function Rooms(props) {
         }
         dispatch(joinRoom(body)).then(response =>{
             if(response.payload.joinSuccess){
-                socket.send(`{"roomID": "${modalRoom.url}", "message":"Request_Setup"}`)
                 props.history.push({
                     pathname : `/gameRoom`,
                     search : `?id=${modalRoom.url}`,
