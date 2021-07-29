@@ -28,12 +28,6 @@ class LandingPage extends React.Component {
     modalOpen: false
   };
 
-  
-  componentDidMount() {
-    localStorage.clear();
-  }
-
-
 
   openModal = () => {
     this.setState({ modalOpen: true })
@@ -67,6 +61,7 @@ class LandingPage extends React.Component {
   };
 
   render() {
+    localStorage.clear();
     const { collapsed } = this.state;
     return (
       <Layout style={{ minHeight: '100vh'}}>

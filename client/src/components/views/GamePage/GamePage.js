@@ -88,8 +88,12 @@ function GamePage(props) {
     const player2_item = JSON.parse(localStorage.getItem("player2"));
     console.log("gameboard_item", gameboard_item);
     console.log("player2", player2_item);
-    if (gameboard_item) setGameboard(gameboard_item);
-    if (turn_item) setTurn(turn_item);
+    if (gameboard_item) setGameboard(new Board(gameboard_item.board));
+    if (turn_item) {
+        console.log("turn_item", turn_item);
+        console.log(typeof(turn_item))
+        setTurn(Number(turn_item));
+    }
     if (player1_item)
       setplayer1(
         new Player(player1_item.y, player1_item.x, player1_item.destination)
@@ -109,50 +113,47 @@ function GamePage(props) {
     localStorage.setItem("player2", JSON.stringify(player2));
   }, [gameboard, turn, player1, player2]);
 
-  //   useEffect(() => {
-  //     setGameboard(JSON.parse(localStorage.getItem("gameboard")));
-  //     setTurn(JSON.parse(localStorage.getItem("turn")));
-  //     setplayer1(JSON.parse(localStorage.getItem("player1")));
-  //     setplayer2(JSON.parse(localStorage.getItem("player2")));
-  //   }, []);
-
 
     const upHandler1 = () => {
+        console.log("upHandler1 run")
         const k = player1.goto('up', gameboard.board)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
-            console.log(player1)
+            console.log("player1",player1)
             setTurn((turn + 1) % 2)
             checkWin(player1, 1)
         }
     }
     const leftHandler1 = () => {
+        console.log("leftHandler1 run")
         const k = player1.goto('left', gameboard.board)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
-            console.log(player1)
+            console.log("player1",player1)
             setTurn((turn + 1) % 2)
             checkWin(player1, 1)
         }
     }
     const rightHandler1 = () => {
+        console.log("rightHandler1 run")
         const k = player1.goto('right', gameboard.board)
         if (k[1]) {
             setTurn((turn + 1) % 2)
             setGameboard(k[0])
             console.log(gameboard)
-            console.log(player1)
+            console.log("player1",player1)
             checkWin(player1, 1)
         }
     }
     const downHandler1 = () => {
+        console.log("downHandler1 run")
         const k = player1.goto('down', gameboard.board)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
-            console.log(player1)
+            console.log("player1",player1)
             console.log(turn)
             setTurn((turn + 1) % 2)
             checkWin(player1, 1)
@@ -160,6 +161,7 @@ function GamePage(props) {
     }
     const upHandler2 = () => {
         const k = player2.goto('up', gameboard.board)
+        console.log(k)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
@@ -172,6 +174,7 @@ function GamePage(props) {
     }
     const leftHandler2 = () => {
         const k = player2.goto('left', gameboard.board)
+        console.log(k)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
@@ -183,6 +186,7 @@ function GamePage(props) {
     }
     const rightHandler2 = () => {
         const k = player2.goto('right', gameboard.board)
+        console.log(k)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
@@ -195,6 +199,7 @@ function GamePage(props) {
     }
     const downHandler2 = () => {
         const k = player2.goto('down', gameboard.board)
+        console.log(k)
         if (k[1]) {
             setGameboard(k[0])
             console.log(gameboard)
