@@ -10,7 +10,7 @@ export class Board {
                 this.board[i] = new Array(17).fill(0)
             }
             this.board[16][8]=1
-            this.board[0][8]=1
+            this.board[0][8]=2
         }
         else{
             this.board = board
@@ -29,8 +29,10 @@ export class Board {
             if(startX===endX && Math.abs(startY-endY)===4){ ///세로로 쌓은 경우
                 let startYFrom = Math.max(startY, endY)
                 
-                if(this.board[startYFrom-1][startX]===0 && this.board[startYFrom-3][startX]===0){
+                if(this.board[startYFrom-1][startX]!==1 && this.board[startYFrom-2][startX]===0 && this.board[startYFrom-3][startX]!==1 &&
+                    !(this.board[startYFrom-1][startX]===-1 && this.board[startYFrom-3][startX]===-1)){
                     this.board[startYFrom-1][startX]=1
+                    this.board[startYFrom-2][startX]=1
                     this.board[startYFrom-3][startX]=1
                     return true
                 }
@@ -38,8 +40,10 @@ export class Board {
             if(startY===endY && Math.abs(startX-endX)===4){ ///가로로 쌓은 경우
                 
                 let startXFrom = Math.max(startX, endX)
-                if(this.board[startY][startXFrom-1]===0 && this.board[startY][startXFrom-3]===0){
+                if(this.board[startY][startXFrom-1]!==1 && this.board[startY][startXFrom-2]===0 && this.board[startY][startXFrom-3]!==1 &&
+                    !(this.board[startY][startX-1]===-1 && this.board[startY][startX-3]===-1)){
                     this.board[startY][startXFrom-1]=1
+                    this.board[startY][startXFrom-2]=1
                     this.board[startY][startXFrom-3]=1
                     return true
                 }
@@ -51,19 +55,44 @@ export class Board {
 
     updateCannotMakeWall(players){
         for(var y=0; y<17; y++){
-            for(var x=0; x<17; x++){
+            for(var x=0; x<17; x++){  //x가 짝수면 가로 벽, y가 짝수면 세로 벽
                 if((x+y)%2===0) continue
-                if(this.board[y][x]===0){
-                    this.board[y][x]=1
-                    let notChange=true
-                    for(var i=0; i<players.length; i++){
-                        notChange=notChange&&existPath(this.board, [players[i].y, players[i].x], players[i].destination)
+                if(x%2==0){    //가로벽일때
+                    if(x+2>17) continue
+                    if(this.board[y][x]===0 && this.board[y][x+2]===0){
+                        this.board[y][x]=1
+                        this.board[y][x+2]=1
+                        let notChange=true
+                        for(var i=0; i<players.length; i++){
+                            notChange=notChange&&existPath(this.board, [players[i].y, players[i].x], players[i].destination)
+                        }
+                        if(notChange){
+                            this.board[y][x]=0
+                            this.board[y][x+2]=0
+                        }else{
+                            this.board[y][x]=-1
+                            this.board[y][x+2]=-1
+                        }
                     }
-                    if(notChange){
-                        this.board[y][x]=0
-                    }else{
-                        this.board[y][x]=-1
+            }
+                else if(y%2==0){ //세로벽일때
+                    if(y+2>17) continue
+                    if(this.board[y][x]===0 && this.board[y+2][x]===0){
+                        this.board[y][x]=1
+                        this.board[y+2][x]=1
+                        let notChange=true
+                        for(var i=0; i<players.length; i++){
+                            notChange=notChange&&existPath(this.board, [players[i].y, players[i].x], players[i].destination)
+                        }
+                        if(notChange){
+                            this.board[y][x]=0
+                            this.board[y+2][x]=0
+                        }else{
+                            this.board[y][x]=-1
+                            this.board[y+2][x]=-1
+                        }
                     }
+
                 }
             }
         }
@@ -144,15 +173,15 @@ export class Player {
                     if(board[y][x-2]===1){
                         if(x>=4){
                             this.x -=4
+                            board[y][this.x]=board[y][x]
                             board[y][x]=0
-                            board[y][this.x]=1
                         }else{
                             return [new Board(board),false]
                         }
                     }else{
                         this.x -=2
+                        board[y][this.x]=board[y][x]
                         board[y][x]=0
-                        board[y][this.x]=1
                     }
                     return [new Board(board),true]
                 }else{
@@ -164,16 +193,16 @@ export class Player {
                     if(board[y][x+2]===1){
                         if(x<=12){
                             this.x +=4
+                            board[y][this.x]=board[y][x]
                             board[y][x]=0
-                            board[y][this.x]=1
                             
                         }else{
                             return [new Board(board),false]
                         }
                     }else{
                         this.x +=2
+                        board[y][this.x]=board[y][x]
                         board[y][x]=0
-                        board[y][this.x]=1
                     }
                     return [new Board(board),true]
                 }else{
@@ -185,15 +214,15 @@ export class Player {
                     if(board[y-2][x]===1){
                         if(y>=4){
                             this.y -=4
+                            board[this.y][x]=board[y][x]
                             board[y][x]=0
-                            board[this.y][x]=1
                         }else{
                             return [new Board(board),false]
                         }
                     }else{
                         this.y -=2
+                        board[this.y][x]=board[y][x]
                         board[y][x]=0
-                        board[this.y][x]=1
                     }
                     return [new Board(board),true]
                 }else{
@@ -205,15 +234,15 @@ export class Player {
                     if(board[y+2][x]===1){
                         if(y<=12){
                             this.y +=4
+                            board[this.y][x]=board[y][x]
                             board[y][x]=0
-                            board[this.y][x]=1
                         }else{
                             return [new Board(board),false]
                         }
                     }else{
                         this.y +=2
+                        board[this.y][x]=board[y][x]
                         board[y][x]=0
-                        board[this.y][x]=1
                     }
                     return [new Board(board),true]
                 }else{

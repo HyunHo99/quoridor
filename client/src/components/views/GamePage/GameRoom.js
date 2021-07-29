@@ -25,6 +25,9 @@ function GameRoom(props) {
     useEffect(() => {
         if(yame){
             yame = false
+            socket.addEventListener('open', ()=>{
+                socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`)
+            })
             socket.addEventListener('message',(data)=>{
                 let k = JSON.parse(data.data)
                 console.log(k)
@@ -45,9 +48,7 @@ function GameRoom(props) {
                     }
             }
             })
-            socket.addEventListener('open', ()=>{
-                socket.send(`{"roomID": "${roomID}", "message":"Request_Setup"}`)
-            })
+
     }
         return () => {
             
