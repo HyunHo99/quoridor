@@ -79,30 +79,55 @@
     padding-right: 30vw;
     height:32vh;
 }
-.Control{
+.User_Control{
     padding-top:4vh;
     height: 100%;
-    background-color: white;
+    flex-basis: 500px;
+	flex-grow: 0;
+	flex-shrink: 0;
+    background-color: #98c1d9;
     border-top-left-radius: 50px;
     border-top-right-radius: 50px;
-    border-top:1px solid #000000;
-    border-left:1px solid #000000;
-    border-right:1px solid #000000;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border:1px solid #3d5a80;
+    
 }
 
 
+.Comp_Control{
+    padding-top:4vh;
+    height: 100%;
+    flex-basis: 300px;
+	flex-grow: 0;
+	flex-shrink: 0;
+    background-color: #98c1d9;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border:1px solid #3d5a80;
+}
+
 .Profile_Text{
-    font-size:30px;
+    font-size:20px;
     position : absolute;
     display:inline-block;
     margin-left: 4vw;
     padding-top: 5.5vh;
 }
 
-.UserProfile{
+.Profile_Img{
+    height: 120px;
+    width: 120px;
+    background: #001529;
+    border-radius: 60px;
     position : absolute;
+}
+
+.UserProfile{
+    position : relative;
     padding-right: 9vw;
-    padding-left: 5vw;
     display: flex;
     justify-content: center;
 }
@@ -112,30 +137,21 @@
     padding-left :25vw;
 }
 
-.CompatitorProfile{
+.CompetitorProfile{
     padding-bottom: 5vh;
     padding-left: 30vw;
     padding-right: 30vw;
+    margin-top: 20px;
     height:32vh;
     display: flex;
     justify-content: center;
 }
 
-.Comp_Control{
-    padding-top:4vh;
-    height: 100%;
-    margin: 0 auto;
-    width: 150%;
-    background-color: white;
-    border-bottom-left-radius: 50px;
-    border-bottom-right-radius: 50px;
-    border-bottom:1px solid #000000;
-    border-left:1px solid #000000;
-    border-right:1px solid #000000;
-}
+
 
 .Comp_text{
+    position: static;
     padding-left: 20vw;
     padding-top: 6vh;
-    font-size: 25px;
+    font-size: 15px;
 }

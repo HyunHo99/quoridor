@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Popup from "reactjs-popup";
 import "./videoChat.css";
 
-const socket = io("ws://143.248.194.208:443");
+const socket = io("ws://143.248.197.173:443");
 
 function VideoChatApp(props) {
   const [stream, setStream] = useState();
@@ -106,52 +106,56 @@ function VideoChatApp(props) {
   let UserVideo;
   if (stream) {
     UserVideo = (
-      <video
-        class="web-cam"
-        muted
-        ref={userVideo}
-        autoPlay
-        width="120px"
-        height="120px"
-        align="center"
-      />
+      <div class="video-wrapper">
+        <video
+          class="web-cam"
+          muted
+          ref={userVideo}
+          autoPlay
+          width="240px"
+          height="180px"
+          align="center"
+        />
+      </div>
     );
   }
 
   let mainView = null;
-  let OpponentVideo = null;
 
   if (callAccepted) {
-    OpponentVideo = (
-      <video
-        class="web-cam"
-        muted
-        ref={partnerVideo}
-        autoPlay
-        width="120px"
-        height="120px"
-        align="center"
-      />
+    mainView = (
+      <div class="video-wrapper">
+        <video
+          class="web-cam"
+          muted
+          ref={partnerVideo}
+          autoPlay
+          width="240px"
+          height="180px"
+          align="center"
+          margin="5px"
+        />
+      </div>
     );
   } else if (receivingCall) {
     mainView = (
       <div className="connectionHandler">
         <h3>Other player is calling you</h3>
-        <button onClick={acceptCall}>
+        <button id="calledbutton" onClick={acceptCall}>
           <h3>Accept</h3>
         </button>
       </div>
     );
   } else if (isCalling) {
     mainView = (
-      <div className="connectionHandler">
+      <div className="calling-other-player">
         {/* <h1>Currently calling {props.opponentUserName}...</h1> */}
         <h3>Currently calling the other player ...</h3>
       </div>
     );
   } else {
     mainView = (
-      <>
+      <div id="start-chat-wrapper">
         <button
           id="startchatbutton"
           onClick={() => {
@@ -160,21 +164,16 @@ function VideoChatApp(props) {
         >
           <h3>Chat with your friend while you play!</h3>
         </button>
-      </>
+      </div>
     );
   }
 
-  if (props.want === 0) {
-    return <div class="video-div">{UserVideo}</div>;
-  }
-
-  if (props.want === 1) {
-    return <div>{OpponentVideo}</div>;
-  }
-
-  if (props.want === 2) {
-    return <div class="main-view">{mainView}</div>;
-  }
+  return (
+    <div id="main-video-interface">
+      {mainView}
+      {UserVideo}
+    </div>
+  );
 }
 
 export default VideoChatApp;

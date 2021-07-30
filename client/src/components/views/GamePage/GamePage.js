@@ -20,15 +20,15 @@ function GamePage(props) {
   var qs = require("qs");
   const imgList = [Rabbit_Img, Shark_Img, Rat_Img, Turtle_Img];
   const thumbList = [Thumb_Rabbit, Thumb_Shark, Thumb_Rat, Thumb_Turtle];
-  // const userNames = props.location.state.userNames
-  // const userName = props.location.state.userName
-  const userNames = ["2@2", "111"];
-  const userName = "111";
-  const roomID = "100";
+  const userNames = props.location.state.userNames;
+  const userName = props.location.state.userName;
+  // const userNames = ["2@2", "111"];
+  // const userName = "111";
+  // const roomID = "100";
   console.log(userNames);
   console.log(userName);
-  // const userImgs = props.location.state.userImgs;
-  const userImgs = [Rabbit_Img, Shark_Img];
+  const userImgs = props.location.state.userImgs;
+  // const userImgs = [Rabbit_Img, Shark_Img];
   const playerIndex = userNames.findIndex((i) => i == String(userName));
 
   const player_Thumb_Img = thumbList[userImgs[playerIndex] - 1];
@@ -56,7 +56,7 @@ function GamePage(props) {
       : new Player(player2_item.y, player2_item.x, player2_item.destination)
   );
   const [turn, setTurn] = useState(0);
-  //const roomID = Object.values(qs.parse(props.location.search))[0];
+  const roomID = Object.values(qs.parse(props.location.search))[0];
   const Im_Player = Number(Object.values(qs.parse(props.location.search))[1]);
   const [wallPoints, setWallPoints] = useState([]);
 
@@ -270,14 +270,13 @@ function GamePage(props) {
   return (
     <div>
       <div className="BackBoard BackColor">
-        <div className="CompatitorProfile">
+        <div className="CompetitorProfile">
           <div className="Comp_Control">
-            <VideoChatApp want={2} roomid={roomID} />
             <div className="UserProfile">
-              <VideoChatApp className="Profile_Img" want={0} roomid={roomID} />
-              <div className="Profile_Text">
+              <img className="Profile_Img" src={compatitor_Thumb_Img} />
+              {/* <div className="Profile_Text">
                 {userNames[playerIndex == 0 ? 1 : 0]}
-              </div>
+              </div> */}
             </div>
             <div className="Comp_text">
               {turn == 1 ? "" : "상대가 고민중..."}
@@ -371,10 +370,10 @@ function GamePage(props) {
           </div>
         </div>
         <div className="MyProfile">
-          <div className="Control">
+          <div className="User_Control">
             <div className="UserProfile">
-              <VideoChatApp className="Profile_Img" want={1} roomid={roomID} />
-              <div className="Profile_Text">{userNames[playerIndex]}</div>
+              <img className="Profile_Img" src={player_Thumb_Img} />
+              {/* <div className="Profile_Text">{userNames[playerIndex]}</div> */}
             </div>
             <div className="Pannal">
               <div className="TurnText">
@@ -397,6 +396,7 @@ function GamePage(props) {
             </div>
           </div>
         </div>
+        <VideoChatApp roomid={roomID} />
       </div>
     </div>
   );
