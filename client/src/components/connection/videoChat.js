@@ -28,6 +28,7 @@ function VideoChatApp(props) {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
+        console.log(stream);
         setStream(stream);
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
