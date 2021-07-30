@@ -171,7 +171,7 @@ export class Player {
                 if(x<2) return [new Board(board),false]
                 if(board[y][x-1]!==1){
                     if(board[y][x-2]!==0){
-                        if(x>=4){
+                        if(x>=4 && board[y][x-3]!==1){
                             this.x -=4
                             board[y][this.x]=board[y][x]
                             board[y][x]=0
@@ -191,7 +191,7 @@ export class Player {
                 if(x>15) return [new Board(board),false]
                 if(board[y][x+1]!==1){
                     if(board[y][x+2]!==0){
-                        if(x<=12){
+                        if(x<=12 && board[y][x+3]!==1){
                             this.x +=4
                             board[y][this.x]=board[y][x]
                             board[y][x]=0
@@ -212,7 +212,7 @@ export class Player {
                 if(y<2) return [new Board(board),false]
                 if(board[y-1][x]!==1){
                     if(board[y-2][x]!==0){
-                        if(y>=4){
+                        if(y>=4 && board[y-3][x]!==1){
                             this.y -=4
                             board[this.y][x]=board[y][x]
                             board[y][x]=0
@@ -232,7 +232,7 @@ export class Player {
                 if(y>15) return [new Board(board),false]
                 if(board[y+1][x]!==1){
                     if(board[y+2][x]!==0){
-                        if(y<=12){
+                        if(y<=12 && board[y+3][x]!==1){
                             this.y +=4
                             board[this.y][x]=board[y][x]
                             board[y][x]=0
