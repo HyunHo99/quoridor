@@ -9,6 +9,7 @@ import Turtle_Img from "../../../images/turtle_board.png";
 import Rat_Img from "../../../images/rat_board.png";
 import Black_Img from "../../../images/black.png";
 import Background_Img from "../../../images/background.png";
+import Axios from 'axios'
 import Void_Img from "../../../images/void.png";
 import Red_Img from "../../../images/red.png";
 import Thumb_Rabbit from "../../../images/rabbit.png";
@@ -102,10 +103,18 @@ function GamePage(props) {
     };
   }, []);
 
-  const Game_End = (who) => {
+  const Game_End = async (who) => {
     if (who === 2) {
+        let body = {
+            url: roomID,
+        };
+      await Axios.post("/api/outRoom", body);
       props.history.push(`/resultPage_win`);
     } else {
+        let body = {
+            url: roomID,
+        };
+      await Axios.post("/api/outRoom", body);
       props.history.push(`/resultPage_lose`);
     }
   };

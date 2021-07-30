@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Popup from "reactjs-popup";
 import "./videoChat.css";
 
-const socket = io("ws://143.248.197.173:443");
+const socket = io("ws://143.248.194.208:443");
 
 function VideoChatApp(props) {
   const [stream, setStream] = useState();

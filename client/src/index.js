@@ -14,7 +14,7 @@ const createStoreWithMiddleware = applyMiddleware(
   promiseMiddleware,
   ReduxThunk
 )(createStore);
-const soc = new WebSocket("ws://143.248.197.173:5000");
+const soc = new WebSocket("ws://143.248.194.208:5000");
 
 ReactDOM.render(
   <Provider
