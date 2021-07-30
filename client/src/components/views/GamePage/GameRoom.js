@@ -88,7 +88,7 @@ function GameRoom(props) {
             방 나가기
             </a>
         }
-        style={{ height: "95vh", background: "#f0f2f5" }}
+        style={{ height: "120vh", background: "#f0f2f5" }}
         >
         <div className="innerRoom">
             참가자 :

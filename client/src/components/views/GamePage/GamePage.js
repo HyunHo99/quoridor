@@ -298,7 +298,7 @@ function GamePage(props) {
             {new Array(19).fill(0).map((i, index) => {
               if (index % 2 == 0 && index !== 0 && index !== 18) {
                 return MakeWall_Bt(index - 1, -1);
-              } else {
+              } else if(index % 2 == 1) {
                 return (
                   <img src={Void_Img} className="Row-Wall BackColor"></img>
                 );
@@ -370,7 +370,7 @@ function GamePage(props) {
             {new Array(19).fill(0).map((i, index) => {
               if (index % 2 == 0 && index !== 0 && index !== 18) {
                 return MakeWall_Bt(index - 1, 17);
-              } else {
+              } else if(index % 2 == 1) {
                 return (
                   <img src={Void_Img} className="Row-Wall BackColor"></img>
                 );
