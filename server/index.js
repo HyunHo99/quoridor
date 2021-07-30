@@ -28,12 +28,16 @@ io.on("connection", function (socket_io) {
     socket_io.join(roomId); //  make the current socket to join the room
     console.log("roomId: ", roomId);
     console.log("userId: ", userId);
-    socket_io.broadcast.to(roomId).emit("user-connected-socket-to-1st-user", userId);
+    socket_io.broadcast
+      .to(roomId)
+      .emit("user-connected-socket-to-1st-user", userId);
   });
 
-  socket_io.on("my-socketid", (roomId, userId)=>{
-    socket_io.broadcast.to(roomId).emit("user-connected-socket-to-2nd-user", userId);
-  })
+  socket_io.on("my-socketid", (roomId, userId) => {
+    socket_io.broadcast
+      .to(roomId)
+      .emit("user-connected-socket-to-2nd-user", userId);
+  });
 
   socket_io.on("callUser", (data) => {
     io.to(data.userToCall).emit("hey", {
@@ -283,68 +287,68 @@ app1.post("/api/joinRoom", (req, res) => {
         if (cl.length >= 2) {
           return { success: false, error: "room is full" };
         }
-            cl.push(user)
-            Room.updateOne({"url":req.body.url}, {"clientList": cl}, (e)=>{
-                if(e) throw e
-                res.status(200).json({joinSuccess:true, turn:cl.length})
-                })
-            })
-        })
-    })
-})
+        cl.push(user);
+        Room.updateOne({ url: req.body.url }, { clientList: cl }, (e) => {
+          if (e) throw e;
+          res.status(200).json({ joinSuccess: true, turn: cl.length });
+        });
+      });
+    });
+  });
+});
 
-app1.post('/api/outRoom', (req, res) =>{
-    console.log("outRoomCalled")
-    Room.findOne({"url" : req.body.url}, function (err, room){
-        if(!room){
-            return res.json({
-            outSuccess : false,
-            body : req.body.url,
-            message:"해당하는 방은 존재하지 않습니다."
-            })
-        }
-        let token = req.cookies.x_auth
-        User.findByToken(token, (err, user)=>{
-            if(err) throw err;
-            if(!user) return res.json({success:false, error:err})
-            let p = room.clientList
-            console.log(p)
-            k = p.filter(i => i.name !== user.name)
-            console.log(k)
-            if(k.length<=0){
-                Room.deleteOne({"url":req.body.url}, (e)=>{
-                    if(e) throw e;
-                    socketMap.set(req.body.url, [])
-                    res.status(200).json({outSuccess:true})
-                })
-            }
-            else{
-                Room.updateOne({"url":req.body.url}, {"clientList": k}, (e)=>{
-                    if(e) throw e
-                    res.status(200).json({outSuccess:true})
-                })
-        }
-    })
-})
-})
-
-app1.post('/api/startGame', auth, (req, res)=>{
-    console.log("gameStart Called")
-    Room.findOne({"url" : req.body.url}, function (err, room){
-        if(err) throw err;
-        if(!room){
-            return res.json({
-            outSuccess : false,
-            body : req.body.url,
-            message:"해당하는 방은 존재하지 않습니다."
-            })
-        }
-        res.status(200).json({userNameList : room.clientList.map(i => i.name), userImageList : room.clientList.map(i => i.image),
-            userName:req.user.name})
+app1.post("/api/outRoom", (req, res) => {
+  console.log("outRoomCalled");
+  Room.findOne({ url: req.body.url }, function (err, room) {
+    if (!room) {
+      return res.json({
+        outSuccess: false,
+        body: req.body.url,
+        message: "해당하는 방은 존재하지 않습니다.",
+      });
     }
-    )
-})
+    let token = req.cookies.x_auth;
+    User.findByToken(token, (err, user) => {
+      if (err) throw err;
+      if (!user) return res.json({ success: false, error: err });
+      let p = room.clientList;
+      k = p.filter((i) => i.name !== user.name);
+      if (k.length <= 0) {
+        Room.deleteOne({ url: req.body.url }, (e) => {
+          if (e) throw e;
+          socketMap.set(req.body.url, []);
+          res.status(200).json({ outSuccess: true });
+        });
+      } else {
+        Room.updateOne({ url: req.body.url }, { clientList: k }, (e) => {
+          if (e) throw e;
+          res.status(200).json({ outSuccess: true });
+        });
+      }
+    });
+  });
+});
 
+app1.post("/api/startGame", auth, (req, res) => {
+  console.log("gameStart Called");
+  Room.findOne({ url: req.body.url }, function (err, room) {
+    if (err) throw err;
+    if (!room) {
+      return res.json({
+        outSuccess: false,
+        body: req.body.url,
+        message: "해당하는 방은 존재하지 않습니다.",
+      });
+    }
+    res
+      .status(200)
+      .json({
+        userNameList: room.clientList.map((i) => i.name),
+        userImageList: room.clientList.map((i) => i.image),
+        userName: req.user.name,
+      });
+  });
+});
 
 server1.listen(port1, "0.0.0.0", () =>
   console.log(`example app listening on port ${port1} !`)

@@ -9,7 +9,7 @@ import Turtle_Img from "../../../images/turtle_board.png";
 import Rat_Img from "../../../images/rat_board.png";
 import Black_Img from "../../../images/black.png";
 import Background_Img from "../../../images/background.png";
-import Axios from 'axios'
+import Axios from "axios";
 import Void_Img from "../../../images/void.png";
 import Red_Img from "../../../images/red.png";
 import Thumb_Rabbit from "../../../images/rabbit.png";
@@ -105,15 +105,16 @@ function GamePage(props) {
 
   const Game_End = async (who) => {
     if (who === 2) {
-        let body = {
-            url: roomID,
-        };
+      let body = {
+        url: roomID,
+      };
       await Axios.post("/api/outRoom", body);
       props.history.push(`/resultPage_win`);
     } else {
-        let body = {
-            url: roomID,
-        };
+      let body = {
+        url: roomID,
+      };
+      setTimeout(400);
       await Axios.post("/api/outRoom", body);
       props.history.push(`/resultPage_lose`);
     }
@@ -298,7 +299,7 @@ function GamePage(props) {
             {new Array(19).fill(0).map((i, index) => {
               if (index % 2 == 0 && index !== 0 && index !== 18) {
                 return MakeWall_Bt(index - 1, -1);
-              } else if(index % 2 == 1) {
+              } else if (index % 2 == 1) {
                 return (
                   <img src={Void_Img} className="Row-Wall BackColor"></img>
                 );
@@ -370,7 +371,7 @@ function GamePage(props) {
             {new Array(19).fill(0).map((i, index) => {
               if (index % 2 == 0 && index !== 0 && index !== 18) {
                 return MakeWall_Bt(index - 1, 17);
-              } else if(index % 2 == 1) {
+              } else if (index % 2 == 1) {
                 return (
                   <img src={Void_Img} className="Row-Wall BackColor"></img>
                 );
