@@ -8,9 +8,8 @@
 ![3](https://user-images.githubusercontent.com/86706463/127528671-d0a9b81e-6fd8-479d-94b4-c3e04db94517.JPG)
 
 ## 로그인 및 회원가입페이지
-- 이제는 진부해진 로그인과 회원가입 페이지입니다.
+- 로그인과 회원가입 페이지입니다.
 ![1](https://user-images.githubusercontent.com/86706463/127528703-e70e30b2-eefb-4e84-872e-cb9a1abf98df.JPG)
-- 더 이상의 자세한 설명은 생략하겠습니다.
 ![2](https://user-images.githubusercontent.com/86706463/127528714-53e81e2d-6e87-4c85-a611-cce4117a54cb.JPG)
 
 
